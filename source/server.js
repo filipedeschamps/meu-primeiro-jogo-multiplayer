@@ -7,20 +7,20 @@ const io = require('socket.io')(webServer)
 const game = createGame()
 let maxConcurrentConnections = 15
 
-webApp.get('/', function(req, res){
+webApp.get('/', function (req, res) {
   res.sendFile(__dirname + '/game.html')
 })
 
 // Coisas que só uma POC vai conhecer
-webApp.get('/a31ecc0596d72f84e5ee403ddcacb3dea94ce0803fc9e6dc2eca1fbabae49a3e3a31ecc0596d72f84e5ee40d0cacb3dea94ce0803fc9e6dc2ecfdfdbabae49a3e3', function(req, res){
+webApp.get('/a31ecc0596d72f84e5ee403ddcacb3dea94ce0803fc9e6dc2eca1fbabae49a3e3a31ecc0596d72f84e5ee40d0cacb3dea94ce0803fc9e6dc2ecfdfdbabae49a3e3', function (req, res) {
   res.sendFile(__dirname + '/game-admin.html')
 })
 
-webApp.get('/collect.mp3', function(req, res){
+webApp.get('/collect.mp3', function (req, res) {
   res.sendFile(__dirname + '/collect.mp3')
 })
 
-webApp.get('/100-collect.mp3', function(req, res){
+webApp.get('/100-collect.mp3', function (req, res) {
   res.sendFile(__dirname + '/100-collect.mp3')
 })
 
@@ -29,8 +29,8 @@ setInterval(() => {
 }, 5000)
 
 
-io.on('connection', function(socket){
-  const admin = socket.handshake.query.admin
+io.on('connection', function (socket) {
+  const admin = socket.handshake.query.admin;
 
   if (io.engine.clientsCount > maxConcurrentConnections && !admin) {
     socket.emit('show-max-concurrent-connections-message')
@@ -39,12 +39,12 @@ io.on('connection', function(socket){
   } else {
     socket.emit('hide-max-concurrent-connections-message')
   }
-  const playerState = game.addPlayer(socket.id)
+  const playerState = game.addPlayer(socket)
   socket.emit('bootstrap', game)
 
   socket.broadcast.emit('player-update', {
     socketId: socket.id,
-    newState: playerState
+    newState: playerState,
   })
 
   socket.on('player-move', (direction) => {
@@ -54,7 +54,7 @@ io.on('connection', function(socket){
 
     socket.broadcast.emit('player-update', {
       socketId: socket.id,
-      newState: game.players[socket.id]
+      newState: game.players[socket.id],
     })
 
     if (fruitColisionIds) {
@@ -111,8 +111,8 @@ io.on('connection', function(socket){
 
 });
 
-webServer.listen(80, function(){
-  console.log('> Server listening on port:',80)
+webServer.listen(80, function () {
+  console.log('> Server listening on port:', 80)
 });
 
 function createGame() {
@@ -133,8 +133,9 @@ function createGame() {
     clearScores
   }
 
-  function addPlayer(socketId) {
-    return game.players[socketId] = {
+  function addPlayer(socket) {
+    return game.players[socket.id] = {
+      userName: socket.handshake.query.userName,
       x: Math.floor(Math.random() * game.canvasWidth),
       y: Math.floor(Math.random() * game.canvasHeight),
       score: 0
@@ -142,7 +143,7 @@ function createGame() {
   }
 
   function removePlayer(socketId) {
-    delete game.players[socketId] 
+    delete game.players[socketId]
   }
 
   function movePlayer(socketId, direction) {
@@ -163,7 +164,7 @@ function createGame() {
     if (direction === 'down' && player.y + 1 < game.canvasHeight) {
       player.y = player.y + 1
     }
-    
+
     return player
   }
 
@@ -190,7 +191,7 @@ function createGame() {
       fruitId: fruitRandomId,
       x: fruitRandomX,
       y: fruitRandomY
-    }  
+    }
 
   }
 
@@ -201,7 +202,7 @@ function createGame() {
   function checkForFruitColision() {
     for (fruitId in game.fruits) {
       const fruit = game.fruits[fruitId]
-      
+
       for (socketId in game.players) {
         const player = game.players[socketId]
 
@@ -221,7 +222,7 @@ function createGame() {
   function clearScores() {
     for (socketId in game.players) {
       game.players[socketId].score = 0
-    }  
+    }
   }
 
   return game

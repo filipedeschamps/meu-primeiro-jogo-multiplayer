@@ -103,10 +103,16 @@
     </div>
 
         <script>
+            let nickName = prompt('Digite seu nick')
+            nickName == null || nickName == "" ? nickName = "Anônimo" : nickName
+
             let connected = false
             const socket = io({
                 reconnectionDelay: 10000,
-                reconnectionDelayMax: 15000
+                reconnectionDelayMax: 15000,
+                query: {
+                    userName: nickName
+                }
             })
             let game
             const scoreTable = document.getElementById('score-table')
@@ -126,6 +132,7 @@
             })
 
             socket.on('bootstrap', (gameInitialState) => {
+                
                 game = gameInitialState
                 console.log('> Received initial state')
                 gameCanvas.style.width = `${game.canvasWidth * 18}px`
@@ -258,7 +265,8 @@
                     const player = game.players[socketId]
                     scoreArray.push({
                         socketId: socketId,
-                        score: player.score
+                        score: player.score,
+                        userName: player.userName
                     })
                 }
 
@@ -280,7 +288,7 @@
 
                     scoreTableInnerHTML += `
                         <tr class="${ socket.id === score.socketId ? 'current-player' : ''}">
-                            <td class="socket-id">${score.socketId}</td>
+                            <td class="socket-id">${score.userName}</td>
                             <td class="score-value">${score.score}</td>
                         </tr>
                     `

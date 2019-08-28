@@ -122,7 +122,8 @@
             let connected = false
             const socket = io({
                 query: {
-                    admin: true
+                    admin: true,
+                    userName: "[ADM] Michel Teló"
                 }
             })
             let game
@@ -265,7 +266,8 @@
                     const player = game.players[socketId]
                     scoreArray.push({
                         socketId: socketId,
-                        score: player.score
+                        score: player.score,
+                        userName: player.userName
                     })
                 }
 
@@ -288,7 +290,7 @@
 
                     scoreTableInnerHTML += `
                         <tr class="${ socket.id === score.socketId ? 'current-player' : ''}">
-                            <td class="socket-id">${score.socketId}</td>
+                            <td class="socket-id">${score.userName}</td>
                             <td class="score-value">${score.score}</td>
                         </tr>
                     `
