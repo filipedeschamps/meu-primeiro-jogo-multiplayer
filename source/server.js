@@ -17,7 +17,7 @@ function buildServerPortString(serverPort) {
 
 const game = createGame()
 const httpServerPort = process.env.PORT || 80;
-const adminStringUUID = uuidv4();
+const adminSlug = process.env.ADMIN_SLUG || uuidv4();
 let maxConcurrentConnections = 15
 
 webApp.get('/', function(req, res){
@@ -25,8 +25,8 @@ webApp.get('/', function(req, res){
 })
 
 // Coisas que só uma POC vai conhecer
-console.log(`> Your admin URL: http://localhost${buildServerPortString(httpServerPort)}/${adminStringUUID}`)
-webApp.get(`/${adminStringUUID}`, function(req, res){
+console.log(`> Your admin URL: http://localhost${buildServerPortString(httpServerPort)}/${adminSlug}`)
+webApp.get(`/${adminSlug}`, function(req, res){
   res.sendFile(__dirname + '/game-admin.html')
 })
 
