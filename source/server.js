@@ -4,7 +4,20 @@ const webApp = express()
 const webServer = require('http').createServer(webApp)
 const io = require('socket.io')(webServer)
 
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+function buildServerPortString(serverPort) {
+  return serverPort == 80 ? "" : ":" + serverPort.toString();
+}
+
 const game = createGame()
+const httpServerPort = process.env.PORT || 80;
+const adminStringUUID = uuidv4();
 let maxConcurrentConnections = 15
 
 webApp.get('/', function(req, res){
@@ -12,7 +25,8 @@ webApp.get('/', function(req, res){
 })
 
 // Coisas que só uma POC vai conhecer
-webApp.get('/a31ecc0596d72f84e5ee403ddcacb3dea94ce0803fc9e6dc2eca1fbabae49a3e3a31ecc0596d72f84e5ee40d0cacb3dea94ce0803fc9e6dc2ecfdfdbabae49a3e3', function(req, res){
+console.log(`> Your admin URL: http://localhost${buildServerPortString(httpServerPort)}/${adminStringUUID}`)
+webApp.get(`/${adminStringUUID}`, function(req, res){
   res.sendFile(__dirname + '/game-admin.html')
 })
 
@@ -111,8 +125,8 @@ io.on('connection', function(socket){
 
 });
 
-webServer.listen(80, function(){
-  console.log('> Server listening on port:',80)
+webServer.listen(httpServerPort, function() {
+  console.log('> Server listening on port:', httpServerPort)
 });
 
 function createGame() {
