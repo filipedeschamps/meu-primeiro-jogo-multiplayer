@@ -1,6 +1,6 @@
 # game_flutter
 
-Verção inicial do jogo desenvolvido utilizando o Flutter
+Versão inicial do jogo desenvolvido utilizando o Flutter
 
 ## Funcionalidades implementadas
 
