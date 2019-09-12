@@ -1,16 +1,30 @@
 # game_flutter
 
-A new Flutter project.
+Verção inicial do jogo desenvolvido utilizando o Flutter
 
-## Getting Started
+## Funcionalidades implementadas
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+- Movimentação do jogador
+- spawn dos outros jogadores
+- spawn das fruitas
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### Falta ser implementado
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- a notificação da colisão com as fruitas a ser enviada ao servidor
+- gráfico de pontuação
+- normalizar o tamanho com canvas do servidor ao do smartphone
+
+
+
+
+
+
+
+
+
+
+
+## Créditos dos Sprites utilizado
+
+- Author Carlos Alface [https://opengameart.org/content/pac-man-inspired-0]
