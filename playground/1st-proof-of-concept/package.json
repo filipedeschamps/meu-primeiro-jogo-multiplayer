@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Um jogo multiplayer bastante simples para testarmos o Socket.io",
   "scripts": {
-    "start": "nodemon source/server.js",
+    "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

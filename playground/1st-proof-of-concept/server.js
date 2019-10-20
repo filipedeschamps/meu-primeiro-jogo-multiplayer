@@ -111,8 +111,8 @@ io.on('connection', function(socket){
 
 });
 
-webServer.listen(80, function(){
-  console.log('> Server listening on port:',80)
+webServer.listen(3000, function(){
+  console.log('> Server listening on port:',3000)
 });
 
 function createGame() {
@@ -142,7 +142,7 @@ function createGame() {
   }
 
   function removePlayer(socketId) {
-    delete game.players[socketId] 
+    delete game.players[socketId]
   }
 
   function movePlayer(socketId, direction) {
@@ -163,7 +163,7 @@ function createGame() {
     if (direction === 'down' && player.y + 1 < game.canvasHeight) {
       player.y = player.y + 1
     }
-    
+
     return player
   }
 
@@ -190,7 +190,7 @@ function createGame() {
       fruitId: fruitRandomId,
       x: fruitRandomX,
       y: fruitRandomY
-    }  
+    }
 
   }
 
@@ -201,7 +201,7 @@ function createGame() {
   function checkForFruitColision() {
     for (fruitId in game.fruits) {
       const fruit = game.fruits[fruitId]
-      
+
       for (socketId in game.players) {
         const player = game.players[socketId]
 
@@ -221,7 +221,7 @@ function createGame() {
   function clearScores() {
     for (socketId in game.players) {
       game.players[socketId].score = 0
-    }  
+    }
   }
 
   return game
