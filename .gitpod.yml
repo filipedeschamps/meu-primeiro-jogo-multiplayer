@@ -1,0 +1,5 @@
+tasks:
+  - init: >
+      cd playground/1st-proof-of-concept/ &&
+      npm install &&
+      npm start
