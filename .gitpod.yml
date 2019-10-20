@@ -1,5 +1,7 @@
+ports:
+- port: 3000
+  onOpen: open-preview
 tasks:
-  - init: >
-      cd playground/1st-proof-of-concept/ &&
-      npm install &&
-      npm start
+- before: cd playground/1st-proof-of-concept
+  init: npm install
+  command: npm start
