@@ -97,24 +97,21 @@
         </div>
         <div id="game-container">
             <canvas id="game-canvas"></canvas>
-            <table id="score-table"></table>        
+            <table id="score-table"></table>
         </div>
 
     </div>
 
         <script>
             let connected = false
-            const socket = io({
-                reconnectionDelay: 10000,
-                reconnectionDelayMax: 15000
-            })
+            const socket = io()
             let game
             const scoreTable = document.getElementById('score-table')
             const gameCanvas = document.getElementById('game-canvas')
             let totalPlayersCount = ''
             const collectFruitAudio = new Audio('collect.mp3')
             const collect100FruitAudio = new Audio('100-collect.mp3')
-            
+
             socket.on('connect', () => {
                 connected = true
                 console.log('> Connected to server')
@@ -139,7 +136,7 @@
 
                 function renderGame() {
                     const allPixels = game.canvasWidth * game.canvasHeight
-                    
+
                     context.globalAlpha = 1
                     context.fillStyle = 'white'
                     context.fillRect(0, 0, game.canvasWidth, game.canvasHeight)
@@ -245,7 +242,7 @@
 
             function updateScoreTable() {
                 const maxResults = 10
-                
+
                 let scoreTableInnerHTML = `
                     <tr class="header">
                         <td>Top 10 Jogadores</td>
@@ -285,7 +282,7 @@
                         </tr>
                     `
                 })
-                
+
                 let playerNotInTop10 = true
 
                 for (const score of scoreSliced) {
@@ -293,7 +290,7 @@
                         playerNotInTop10 = false
                         break
                     }
-                    
+
                     playerNotInTop10 = true
                 }
 
@@ -314,8 +311,8 @@
                 `
 
                 scoreTable.innerHTML = scoreTableInnerHTML
-                
-                
+
+
             }
 
             function handleKeydown(event) {
@@ -361,7 +358,7 @@
 
                     isThrottled = true;
                     callback.apply(this, arguments);
-                    
+
                     setTimeout(() => {
                     isThrottled = false;
                     if (args) {
