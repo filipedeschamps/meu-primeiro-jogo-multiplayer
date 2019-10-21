@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://gitpod.io/#https://github.com/filipedeschamps/meu-primeiro-jogo-multiplayer">
-    <img src="multiplayer-readme-fast.gif?raw=true" width="550">
+    <img src="https://raw.githubusercontent.com/filipedeschamps/meu-primeiro-jogo-multiplayer/master/game-preview.gif" width="550">
   </a>
 </p>
 
