@@ -3,17 +3,24 @@ const express = require('express')
 const webApp = express()
 const webServer = require('http').createServer(webApp)
 const io = require('socket.io')(webServer)
+const crypto = require('crypto')
+const cookie = require('cookie')
 
 const game = createGame()
 let maxConcurrentConnections = 15
 
+
+let adminHash =  crypto.createHash('sha256').update(crypto.randomBytes(256)).digest('hex')
+
 webApp.get('/', function(req, res){
   res.sendFile(__dirname + '/game.html')
+  res.clearCookie('type', { path: '/' })
 })
 
 // Coisas que só uma POC vai conhecer
-webApp.get('/a31ecc0596d72f84e5ee403ddcacb3dea94ce0803fc9e6dc2eca1fbabae49a3e3a31ecc0596d72f84e5ee40d0cacb3dea94ce0803fc9e6dc2ecfdfdbabae49a3e3', function(req, res){
+webApp.get(`/${adminHash}`, function(req, res){
   res.sendFile(__dirname + '/game-admin.html')
+  res.cookie('type', adminHash, {path: adminHash})
 })
 
 webApp.get('/collect.mp3', function(req, res){
@@ -72,47 +79,56 @@ io.on('connection', function(socket){
     socket.broadcast.emit('player-remove', socket.id)
   })
 
+  let cookies = cookie.parse(socket.handshake.headers.cookie);
 
-  let fruitGameInterval
-  socket.on('admin-start-fruit-game', (interval) => {
-    console.log('> Fruit Game start')
-    clearInterval(fruitGameInterval)
+  /*
+    Coloque aqui dentro todas as
+    funções que apenas o admin pode realizar
+  */
+  if (cookies.type == adminHash) {
 
-    fruitGameInterval = setInterval(() => {
-      const fruitData = game.addFruit()
+    let fruitGameInterval
+    socket.on('admin-start-fruit-game', (interval) => {
+        console.log('> Fruit Game start')
+        clearInterval(fruitGameInterval)
 
-      if (fruitData) {
-        io.emit('fruit-add', fruitData)
-      }
-    }, interval)
-  })
+        fruitGameInterval = setInterval(() => {
+        const fruitData = game.addFruit()
 
-  socket.on('admin-stop-fruit-game', () => {
-    console.log('> Fruit Game stop')
-    clearInterval(fruitGameInterval)
-  })
+        if (fruitData) {
+            io.emit('fruit-add', fruitData)
+        }
+        }, interval)
+    })
 
-  socket.on('admin-start-crazy-mode', () => {
-    io.emit('start-crazy-mode')
-  })
 
-  socket.on('admin-stop-crazy-mode', () => {
-    io.emit('stop-crazy-mode')
-  })
+    socket.on('admin-stop-fruit-game', () => {
+        console.log('> Fruit Game stop')
+        clearInterval(fruitGameInterval)
+    })
 
-  socket.on('admin-clear-scores', () => {
-    game.clearScores()
-    io.emit('bootstrap', game)
-  })
+    socket.on('admin-start-crazy-mode', () => {
+        io.emit('start-crazy-mode')
+    })
 
-  socket.on('admin-concurrent-connections', (newConcurrentConnections) => {
-    maxConcurrentConnections = newConcurrentConnections
-  })
+    socket.on('admin-stop-crazy-mode', () => {
+        io.emit('stop-crazy-mode')
+    })
 
+    socket.on('admin-clear-scores', () => {
+        game.clearScores()
+        io.emit('bootstrap', game)
+    })
+
+    socket.on('admin-concurrent-connections', (newConcurrentConnections) => {
+        maxConcurrentConnections = newConcurrentConnections
+    })
+  }
 });
 
 webServer.listen(3000, function(){
   console.log('> Server listening on port:',3000)
+  console.log('> Admin hash : ', adminHash)
 });
 
 function createGame() {
