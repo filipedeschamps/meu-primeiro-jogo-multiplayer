@@ -1,0 +1,93 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Meu jogo</title>
+    <style>
+        #screen
+        {
+            border: 10px solid black;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            image-rendering: -noz-crisp-edges;
+            width: 400px;
+            height: 400px;
+        }
+    </style>
+</head>
+    <body>
+        <canvas id="screen" width="10" height="10"></canvas>
+
+        <script>
+        
+            const screen = document.getElementById('screen')
+            const context = screen.getContext('2d')
+        
+            const currentPlayerId = 'player1'
+
+            const game = {
+                players:
+                {
+                    'player1': {x: 1, y: 1},
+                    'player2': {x: 9, y:9}
+                }, 
+                fruits:
+                {
+                    'fruit1': {x: 3, y: 1}
+                }
+            }
+        
+            document.addEventListener('keydown',  handleKeydown)
+
+            function handleKeydown(event)
+            {
+                const keyPressed = event.key
+                const player = game.players[currentPlayerId]
+
+                if(keyPressed === 'ArrowUp' && player.y - 1 >= 0)
+                {
+                    player.y -= 1
+                    return
+                }
+                
+                if(keyPressed === 'ArrowDown' && player.y + 1 < screen.height)
+                {
+                    player.y += 1
+                    return
+                }
+
+                if(keyPressed === 'ArrowRight' && player.x + 1 < screen.width)
+                {
+                    player.x += 1
+                    return
+                }
+
+                if(keyPressed === 'ArrowLeft' && player.x - 1 >= 0)
+                {
+                    player.x -= 1                    
+                    return
+                }
+            }
+
+
+            renderScreen()
+
+            function renderScreen ()
+            {
+                context.clearRect(0, 0, 10, 10)
+                for(const playerId in game.players)
+                {
+                    const player = game.players[playerId]
+                    context.fillStyle = 'yellow'
+                    context.fillRect(player.x, player.y, 1, 1)
+                }
+                for(const fruitId in game.fruits)
+                {
+                    const fruit = game.fruits [fruitId]
+                    context.fillStyle = 'pink'
+                    context.fillRect(fruit.x, fruit.y, 1, 1)
+                }
+                requestAnimationFrame(renderScreen)
+            }
+        </script>
+    </body>
+</html>
