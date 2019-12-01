@@ -1,37 +1,4 @@
-@font-face {
-  font-family: "Helvetica Neue";
-  src: url("../fonts/helvetica-neue.ttf");
-}
-@font-face {
-  font-family: Roboto;
-  src: url(../fonts/Roboto-Thin.ttf);
-  font-weight: 100;
-}
-@font-face {
-  font-family: Roboto;
-  src: url(../fonts/Roboto-Light.ttf);
-  font-weight: 300;
-}
-@font-face {
-  font-family: Roboto;
-  src: url(../fonts/Roboto-Regular.ttf);
-  font-weight: 400;
-}
-@font-face {
-  font-family: Roboto;
-  src: url(../fonts/Roboto-Medium.ttf);
-  font-weight: normal;
-}
-@font-face {
-  font-family: Roboto;
-  src: url(../fonts/Roboto-Bold.ttf);
-  font-weight: bold;
-}
-@font-face {
-  font-family: Roboto;
-  src: url(../fonts/Roboto-Black.ttf);
-  font-weight: 900;
-}
+@charset "UTF-8";
 
 * {
   margin: 0;
