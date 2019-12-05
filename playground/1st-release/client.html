@@ -12,5 +12,20 @@
 </head>
 <body>
     <canvas id="screen" width="500" height="500"></canvas>
+
+    <script>
+        const screen = document.getElementById('screen')
+        const context = screen.getContext('2d')
+
+
+        const color = 'red'
+        const positionX = 0
+        const positionY = 0
+        const width = 250
+        const height = 250
+
+        context.fillStyle = color
+        context.fillRect(positionX, positionY, width, height)
+    </script>
 </body>
 </html>
