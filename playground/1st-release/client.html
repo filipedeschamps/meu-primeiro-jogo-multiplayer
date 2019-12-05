@@ -17,15 +17,32 @@
         const screen = document.getElementById('screen')
         const context = screen.getContext('2d')
 
+        const game = {
+            players: {
+                'player1': {x: 0, y: 0},
+                'player2': {x: 9, y: 9}
+            },
 
-        const color = 'red'
-        const positionX = 0
-        const positionY = 0
-        const width = 250
-        const height = 250
+            fruits: {
+                'fruit1': {x: 3, y: 1}
+            }
+        }        
+        
+        renderScreen()
 
-        context.fillStyle = color
-        context.fillRect(positionX, positionY, width, height)
+        function renderScreen(){
+            for(playerId in game.players){
+                const player = game.players[playerId]
+                context.fillStyle = 'black'
+                context.fillRect(player.x, player.y, 1, 1)
+            }
+             for(fruitId in game.fruits){
+                const fruit = game.fruits[fruitId]
+                context.fillStyle = 'green'
+                context.fillRect(fruit.x, fruit.y, 1, 1)
+            }
+        }
+
     </script>
 </body>
 </html>
