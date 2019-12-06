@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://gitpod.io/#https://github.com/filipedeschamps/meu-primeiro-jogo-multiplayer">
+  <a href="https://www.youtube.com/watch?v=0sTfIZvjYJk&list=PLMdYygf53DP5SVQQrkKCVWDS0TwYLVitL&index=2">
     <img src="https://raw.githubusercontent.com/filipedeschamps/meu-primeiro-jogo-multiplayer/master/game-preview.gif" width="550">
   </a>
 </p>
@@ -7,9 +7,15 @@
 # meu-primeiro-jogo-multiplayer
 Um jogo multiplayer simples o suficiente para qualquer pesssoa aprender conceitos importantes sobre **arquitetura** e **desenvolvimento de software**.
 
-Além disto, ele foi projetado de uma forma modificável/hackeável, para que você consiga implementar suas próprias idéias ou até reimplementar do zero em outras linguagens. Inclusive este é repositório é um **playground** de experimentos e qualquer tentativa será bem vinda.
+Ele foi projetado de uma forma modificável/hackeável para que você consiga implementar suas próprias idéias ou até reimplementar do zero em outras linguagens. Inclusive este é repositório é um **playground** de experimentos e qualquer tentativa será bem vinda.
 
-Mas antes de prosseguir, é extremamente importante você assistir esse vídeo introdutório, com toda explicação por trás deste projeto, inclusive todos os passos utilizados para programar ele: https://www.youtube.com/watch?v=0sTfIZvjYJk
+Antes de prosseguir, é extremamente importante você assistir esse vídeo introdutório com toda explicação por trás deste projeto, inclusive todos os passos utilizados para programar ele: **[Assistir introdução no YouTube](https://www.youtube.com/watch?v=0sTfIZvjYJk&list=PLMdYygf53DP5SVQQrkKCVWDS0TwYLVitL&index=2)**
+
+## Experimentos
+
+| Autor | Descrição |
+| :---: | :--- |
+| <img src="https://avatars2.githubusercontent.com/u/55103535?s=400&v=4" width="150"> | **[Estilo Jogo da Cobrinha](http://gitpod.io/#experiment=implementacao-snake/https://github.com/filipedeschamps/meu-primeiro-jogo-multiplayer) por [@vassourita](https://github.com/vassourita)**<br>Jogadores são como cobrinhas que crescem a cada fruta comida. Se você esbarrar em outra cobra os seus pontos e toda sua extensão do seu rabo passam a pertencer a ela. |
 
 ## Como enviar o seu experimento
 Este é um projeto simples e pode ser desenvolvido em qualquer lugar, mas ultimamente estou utilizando uma IDE Online chamada **[Gitpod](https://gitpod.io)** e nela consigo deixar o ambiente **100% configurado** (tanto o frontend quanto o backend) para você apenas sentar e programar. Inclusive, eu vou reprogramar o jogo todo por dentro dela e para você programar também, basta seguir os passos abaixo:
