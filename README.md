@@ -15,7 +15,7 @@ Antes de prosseguir, é extremamente importante você assistir esse vídeo intro
 
 | Autor | Descrição |
 | :---: | :--- |
-| <img src="https://avatars2.githubusercontent.com/u/55103535?s=400&v=4" width="150"> | **[Estilo Jogo da Cobrinha](http://gitpod.io/#experiment=implementacao-snake/https://github.com/filipedeschamps/meu-primeiro-jogo-multiplayer) por [@vassourita](https://github.com/vassourita)**<br>Jogadores são como cobrinhas que crescem a cada fruta comida. Se você esbarrar em outra cobra os seus pontos e toda sua extensão do seu rabo passam a pertencer a ela. |
+| <img src="https://avatars2.githubusercontent.com/u/55103535?s=400&v=4" width="170"> | **Estilo Jogo da Cobrinha por [@vassourita](https://github.com/vassourita)**<br>Jogadores são como cobrinhas que crescem a cada fruta comida. Se você esbarrar em outra cobra os seus pontos e toda sua extensão do seu rabo passam a pertencer a ela.<br>[Rodar no Gitpod](http://gitpod.io/#experiment=implementacao-snake/https://github.com/filipedeschamps/meu-primeiro-jogo-multiplayer) / [Abrir código](https://github.com/filipedeschamps/meu-primeiro-jogo-multiplayer/tree/master/playground/implementacao-snake) |
 
 ## Como enviar o seu experimento
 Este é um projeto simples e pode ser desenvolvido em qualquer lugar, mas ultimamente estou utilizando uma IDE Online chamada **[Gitpod](https://gitpod.io)** e nela consigo deixar o ambiente **100% configurado** (tanto o frontend quanto o backend) para você apenas sentar e programar. Inclusive, eu vou reprogramar o jogo todo por dentro dela e para você programar também, basta seguir os passos abaixo:
