@@ -1,13 +1,19 @@
 
 #screen{
-    border: 1px solid #CCC;
+    border: 10px solid #CCC;
+    image-rendering:  pixelated crisp-edges -moz-crisp-edges;
+
+    width: 400px;
+    height: 400px;
+    
+
 
 
 }
 
 #screen2{
     border: 1px solid #CCC;
-    width: 100 px;
-    height: 100 px;
+    width: 100px;
+    height: 100px;
 
 }
