@@ -3,5 +3,4 @@ ports:
     onOpen: open-preview
 tasks:
   - before: if [[ -z "$experiment" ]]; then cd playground/1st-proof-of-concept; else cd playground/$experiment; fi
-    init: npm install
-    command: npm start
+    command: nvm install 13.3.0 && npm install && npm start
