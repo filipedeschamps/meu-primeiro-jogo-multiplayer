@@ -1,3 +1,5 @@
+import { mod } from "./utils.js"
+
 export default function createGame() {
     const state = {
         players: {},
@@ -92,25 +94,17 @@ export default function createGame() {
         notifyAll(command)
         
         const acceptedMoves = {
-             ArrowUp(player) {
-                if (player.y - 1 >= 0) {
-                    player.y = player.y - 1
-                }
+            ArrowUp(player) {
+                player.y = mod(state.screen.height, player.y - 1)
             },
             ArrowRight(player) {
-                if (player.x + 1 < state.screen.width) {
-                    player.x = player.x + 1
-                }
+                player.x = mod(state.screen.width, player.x + 1)
             },
             ArrowDown(player) {
-                if (player.y + 1 < state.screen.height) {
-                    player.y = player.y + 1
-                }
+                player.y = mod(state.screen.height, player.y + 1)
             },
             ArrowLeft(player) {
-                if (player.x - 1 >= 0) {
-                    player.x = player.x - 1
-                }
+                player.x = mod(state.screen.width, player.x - 1)
             }
         }
 
