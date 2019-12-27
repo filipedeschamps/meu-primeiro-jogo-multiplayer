@@ -1,39 +1,29 @@
 export function setupScreen(canvas, game) {
-    const { screen: {width, height} } = game.state
-    canvas.width = width
-    canvas.height = height
+    const { screen: {width, height, pixelsPerFields} } = game.state
+    canvas.width = width * pixelsPerFields
+    canvas.height = height * pixelsPerFields
 }
 
 export default function renderScreen(screen, scoreTable, game, requestAnimationFrame, currentPlayerId) {
     const context = screen.getContext('2d')
     context.fillStyle = 'white'
-    const { screen: {width, height} } = game.state
-    context.clearRect(0, 0, width, height)
+    const { screen: { width, height, pixelsPerFields }} = game.state
+    context.clearRect(0, 0, width*pixelsPerFields, height*pixelsPerFields)
 
     for (const playerId in game.state.players) {
         const player = game.state.players[playerId]
-        let { score } = player
-        score *= 5
-        const color
-        console.log(colorString)
-        context.fillStyle = colorString
-        context.globalAlpha = 0.8
-        context.fillRect(player.x, player.y, 1, 1)
+        drawPlayer(context, player, game)
     }
 
     for (const fruitId in game.state.fruits) {
         const fruit = game.state.fruits[fruitId]
-        context.fillStyle = 'green'
-        context.globalAlpha = 0.5
-        context.fillRect(fruit.x, fruit.y, 1, 1)
+        drawFruit(context, fruit, game)        
     }
 
     const currentPlayer = game.state.players[currentPlayerId]
-
     if(currentPlayer) {
-        context.globalAlpha = 1
-        context.fillStyle = 'rgb(50,51,247)'
-        context.fillRect(currentPlayer.x, currentPlayer.y, 1, 1)
+        const isCurrentPlayer = true
+        drawPlayer(context, currentPlayer, game, isCurrentPlayer)
     }
 
     updateScoreTable(scoreTable, game, currentPlayerId)
@@ -43,7 +33,55 @@ export default function renderScreen(screen, scoreTable, game, requestAnimationF
     })
 }
 
+function drawPlayer(screenContext, player, game, isCurrentPlayer = false) {
+    const { screen: { pixelsPerFields }} = game.state
+
+    let eyeAndMouthColors = 'black'
+    let faceColor = getColorFromScore(player.score)
+    if (isCurrentPlayer) {
+        eyeAndMouthColors = 'white'
+    }
+
+    let { x, y } = player
+    x *= pixelsPerFields
+    y *= pixelsPerFields
+
+    // Draw face
+    screenContext.fillStyle = faceColor
+    screenContext.fillRect(x, y, pixelsPerFields, pixelsPerFields)
+
+    // Draw eyes and mouth
+    screenContext.fillStyle = eyeAndMouthColors
+    screenContext.fillRect(x+1,y+1,1,1)
+    screenContext.fillRect(x+3,y+1,1,1)
+    screenContext.fillRect(x+1,y+3,3,1)
+}
+
+function drawFruit(screenContext, fruit, game) {
+    const { screen: { pixelsPerFields }} = game.state
+    screenContext.globalAlpha = 1
+    
+    let { x, y } = fruit
+    x *= pixelsPerFields
+    y *= pixelsPerFields
+    
+    // Draw strawberry body
+    screenContext.fillStyle = '#ff0000'
+    screenContext.fillRect(x, y+1, 1, 2)
+    screenContext.fillRect(x+4, y+1, 1, 2)
+    screenContext.fillRect(x+1, y+1, 1, 3)
+    screenContext.fillRect(x+3, y+1, 1, 3)
+    screenContext.fillRect(x+2, y+2, 1, 3)
+ 
+    // Draw green leaf
+    screenContext.fillStyle = '#00a933'
+    screenContext.fillRect(x+1,y,3,1)
+    screenContext.fillRect(x+2,y+1,1,1)
+    
+}
+
 function getColorFromScore(score) {
+    score *= 10
     const red = score > 240 ? 240 : score
     const green = score > 219 ? 219 : score
     const blue = score > 79 ? 79 : score
