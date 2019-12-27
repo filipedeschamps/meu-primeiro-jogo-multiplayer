@@ -12,33 +12,42 @@ export default function renderScreen(screen, scoreTable, game, requestAnimationF
 
     for (const playerId in game.state.players) {
         const player = game.state.players[playerId]
-        const { score } = player
-        const colorString = `rgb(${score*10},${score},${score*5})`
+        let { score } = player
+        score *= 5
+        const color
+        console.log(colorString)
         context.fillStyle = colorString
-        context.globalAlpha = 1
+        context.globalAlpha = 0.8
         context.fillRect(player.x, player.y, 1, 1)
     }
 
     for (const fruitId in game.state.fruits) {
         const fruit = game.state.fruits[fruitId]
         context.fillStyle = 'green'
-        context.globalAlpha = 1
+        context.globalAlpha = 0.5
         context.fillRect(fruit.x, fruit.y, 1, 1)
     }
 
     const currentPlayer = game.state.players[currentPlayerId]
 
-    // if(currentPlayer) {
-    //     context.globalAlpha = 1
-    //     context.fillStyle = '#F0DB4F'
-    //     context.fillRect(currentPlayer.x, currentPlayer.y, 1, 1)
-    // }
+    if(currentPlayer) {
+        context.globalAlpha = 1
+        context.fillStyle = 'rgb(50,51,247)'
+        context.fillRect(currentPlayer.x, currentPlayer.y, 1, 1)
+    }
 
     updateScoreTable(scoreTable, game, currentPlayerId)
 
     requestAnimationFrame(() => {
         renderScreen(screen, scoreTable, game, requestAnimationFrame, currentPlayerId)
     })
+}
+
+function getColorFromScore(score) {
+    const red = score > 240 ? 240 : score
+    const green = score > 219 ? 219 : score
+    const blue = score > 79 ? 79 : score
+    return `rgb(${red},${green},${blue})`
 }
 
 function updateScoreTable(scoreTable, game, currentPlayerId) {
