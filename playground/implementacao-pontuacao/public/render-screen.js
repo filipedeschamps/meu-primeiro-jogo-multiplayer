@@ -74,32 +74,20 @@ function updateScoreTable(scoreTable, game, currentPlayerId) {
 
     scoreTableInnerHTML = topScorePlayers.reduce((stringFormed, player) => {
         return stringFormed + `
-            <tr class="${player.playerId === currentPlayerId ? 'current-player' : ''}">
+            <tr ${player.playerId === currentPlayerId ? 'class="current-player"' : ''}>
                 <td>${player.playerId}</td>
                 <td>${player.score}</td>
             </tr>
         `
     }, scoreTableInnerHTML)
 
-    let playerInTop10 = false
-    for (const player of topScorePlayers) {
-        if (player.playerId === currentPlayerId) {
-            playerInTop10 = true
-            break
-        }
-    }
+    const currentPlayerFromTopScore = topScorePlayers[currentPlayerId]
 
-    if (!playerInTop10) {
-        const currentPlayerFromTopScore = game.state.players[currentPlayerId]
-
-        if (!currentPlayerFromTopScore) {
-            return
-        }
-
+    if (currentPlayerFromTopScore) {
         scoreTableInnerHTML += `
-            <tr class="current-player">
-                <td>${currentPlayerId}</td>
-                <td>${currentPlayerFromTopScore.score}</td>
+            <tr class="current-player bottom">
+                <td class="socket-id">${currentPlayerFromTopScore.id} EU </td>
+                <td class="score-value">${currentPlayerFromTopScore.score}</td>
             </tr>
         `
     }
