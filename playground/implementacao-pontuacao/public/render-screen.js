@@ -82,7 +82,7 @@ function updateScoreTable(scoreTable, game, currentPlayerId) {
     }, scoreTableInnerHTML)
 
     const currentPlayerFromTopScore = topScorePlayers[currentPlayerId]
-    
+
     if (currentPlayerFromTopScore) {
         scoreTableInnerHTML += `
             <tr class="current-player bottom">
