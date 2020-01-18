@@ -6,5 +6,6 @@
   <img src="https://raw.githubusercontent.com/Allanksr/meu-primeiro-jogo-multiplayer/master/playground/pwa-pod/preview/phone2.jpeg" width="40">
   <img src="https://raw.githubusercontent.com/Allanksr/meu-primeiro-jogo-multiplayer/master/playground/pwa-pod/preview/phone3.jpeg" width="40">
 </p>
-  
-[PWA no Gitpod](http://gitpod.io/#experiment=pwa-pod/https://github.com/Allanksr/meu-primeiro-jogo-multiplayer) 
+
+[![PWA no Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](http://gitpod.io/#experiment=pwa-pod/https://github.com/Allanksr/meu-primeiro-jogo-multiplayer) 
+
