@@ -1,0 +1,199 @@
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Meu Primeiro Jogo Multiplayer</title>
+
+	<style>
+		body {
+			margin: 40px 0 0 0;
+			padding: 0;
+			background-color: #EEE;
+			text-align: center;
+		}
+
+		.damage-border {
+			outline: none;
+			border: 2px solid #ff0000;
+			box-shadow: 0px 0px 8px #ff0000;
+			-moz-box-shadow: 0px 0px 8px #ff0000;
+			-webkit-box-shadow: 0px 0px 8px #ff0000;
+		}
+
+		#screen {
+			border: 1px solid #CCC;
+			image-rendering: pixelated;
+			image-rendering: crisp-edges;
+			image-rendering: -moz-crisp-edges;
+			width: 400px;
+			height: 400px;
+			-webkit-box-shadow: 0px 4px 17px 0px rgba(0, 0, 0, 0.19);
+			-moz-box-shadow: 0px 4px 17px 0px rgba(0, 0, 0, 0.19);
+			box-shadow: 0px 4px 17px 0px rgba(0, 0, 0, 0.19);
+			margin-bottom: 20px;
+			margin-left: 20px;
+			margin-right: 20px;
+			display: inline-block;
+			vertical-align: top;
+			outline: none;
+			border: 2px solid #ff0000;
+			box-shadow: 0px 0px 8px #ff0000;
+			-moz-box-shadow: 0px 0px 8px #ff0000;
+			-webkit-box-shadow: 0px 0px 8px #ff0000;
+		}
+
+		#score-table {
+			font-size: 13px;
+			vertical-align: top;
+			display: inline-block;
+			font-family: Arial, Helvetica, sans-serif
+		}
+
+		#score-table tr.header td {
+			border-bottom: 1px solid #CCC;
+			padding-bottom: 8px;
+		}
+
+		#score-table tr.footer td {
+			border-top: 1px solid #CCC;
+			font-size: 11px;
+		}
+
+		#score-table td {
+			padding-top: 5px;
+			padding-bottom: 5px;
+		}
+
+		#score-table .socket-id {
+			font-weight: normal;
+			color: #222;
+			width: 150px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: inline-block
+		}
+
+		#score-table .score-value {
+			font-weight: bold;
+			color: #000;
+			text-align: right;
+		}
+
+		#score-table .current-player {
+			color: #bdaa27;
+		}
+	</style>
+	<script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <img id="potions-img" src="./img/potions2.png"/>
+	<canvas id="screen" width="10" height="10" class='damage-border'></canvas>
+	<table id="score-table"></table>	
+
+	<script type="module">
+		import createGame from './game.js'
+            import createKeyboardListener from './keyboard-listener.js'
+            import renderScreen, { setupScreen } from './render-screen.js'
+            
+            const game = createGame()
+            const keyboardListener = createKeyboardListener(document)
+
+            const socket = io() 
+
+            function sound(src) {        
+                this.sound = document.createElement("audio");
+                this.sound.src = src;
+                this.sound.setAttribute("preload", "auto");
+                this.sound.setAttribute("controls", "none");
+                this.sound.style.display = "none";
+                document.body.appendChild(this.sound);
+                this.play = function(){
+                    this.sound.play();
+                }
+                this.stop = function(){
+                    this.sound.pause();
+                }    
+            }
+
+            const audios = {
+                playerCollision: new sound("./sounds/bubble_hit.mp3"),
+                newFruit: new sound("./sounds/fruit_drop.mp3"),
+                wallCollision: new sound("./sounds/wall_energy_shock.mp3"),
+                eatFruit: new sound("./sounds/eat_fruit_apple.mp3"),
+                drinkPot: new sound("./sounds/human_swallowing_loud.mp3"), 
+            }
+
+            socket.on('connect', () => {
+                const playerId = socket.id
+                // console.log(`Player connected on Client with id: ${playerId}`)
+                // console.log('socket', socket)
+
+                const screen = document.getElementById('screen')
+                const scoreTable = document.getElementById('score-table')
+                const potionsImg = document.getElementById('potions-img')
+                
+                setupScreen(screen, game)
+                renderScreen(screen, scoreTable, game, requestAnimationFrame, playerId, potionsImg)
+            })
+
+            socket.on('disconnect', () => {
+                console.log('Unsubscribing All')
+                keyboardListener.unsubscribeAll();
+            })
+
+            socket.on('setup', (state) => {
+                const playerId = socket.id
+                game.setState(state)
+
+                keyboardListener.registerPlayerId(playerId)
+                keyboardListener.subscribe(game.movePlayer)
+                keyboardListener.subscribe((command) => {
+                    socket.emit('move-player', command)
+                })
+            })
+
+            socket.on('add-player', (command) => {
+                // console.log(`Receiving ${command.type} -> ${command.playerId}`)
+                game.addPlayer(command)
+            })
+
+            socket.on('remove-player', (command) => {
+                // console.log(`Receiving ${command.type} -> ${command.playerId}`)
+                game.removePlayer(command)
+            })
+
+            socket.on('move-player', (command) => {
+                // console.log(`Receiving ${command.type} -> ${command.playerId}`)
+
+                const playerId = socket.id
+
+                if (playerId !== command.playerId) {
+                    game.movePlayer(command)
+                }
+            })
+
+            socket.on('add-fruit', (command) => {
+                // console.log(`Receiving ${command.type} -> ${command.fruitId}`)
+                game.addFruit(command)
+            })
+
+            socket.on('play-audio', (command) => {
+                // console.log(`Receiving ${command.type} -> ${command.fruitId}`)
+                const playerId = socket.id
+                if(command.audio && audios[command.audio]){
+                    //only play sound for those users
+                    if(command.playersId && command.playersId.indexOf(playerId)>-1)
+                        audios[command.audio].sound.cloneNode(true).play()                                        
+                }                    
+            })
+
+            socket.on('remove-fruit', (command) => {
+                // console.log(`Receiving ${command.type} -> ${command.fruitId}`)
+                game.removeFruit(command)
+            })
+        </script>
+</body>
+
+</html>
