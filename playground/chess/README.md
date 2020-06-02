@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Chess" src="preview/chess.png" width="100%">
+  <img alt="Chess" src="preview/chess.png" width="50%">
 </p>
 
 ## 💻 Projeto
