@@ -1,6 +1,7 @@
 ports:
   - port: 3000
-    onOpen: open-preview
 tasks:
-  - before: if [[ -z "$experiment" ]]; then cd playground/1st-proof-of-concept; else cd playground/$experiment; fi
-    command: nvm install 13.3.0 && npm install && npm start
+  # - before: if [[ -z "$experiment" ]]; then cd playground/1st-proof-of-concept; else cd playground/$experiment; fi
+    # command: nvm install 13.3.0 && npm install && npm start
+  - before: cd playground/_mendel/
+    command: nvm install 13.3.0 && npm install && npx serve
