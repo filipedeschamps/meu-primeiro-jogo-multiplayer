@@ -25,10 +25,32 @@
         const currentPlayerId = 'player1'
 
 
+        // camada de jogo (dados + lógica)
         // Implementação do design pattern: Factory
         function createGame() {
             function movePlayer(command) {
                 console.log(`Moving ${command.playerId} with ${command.keyPressed}`)
+                // Implementação do design pattern: Command Patterns
+                // Casa o nome da teclas que devem ter funcionalidade com o nome de suas respectivas funções. Aí é só chamar as funções com o próprio nome da tecla!
+                const acceptedMoves = {
+                    // Utilizando as funções max e min, podemos nos livrar completamente dos ifs. Maravilhoso!
+                    ArrowUp(player) {
+                        player.y = Math.max(player.y - 1, 0)
+                    },
+                    ArrowDown(player) {
+                        player.y = Math.min(player.y + 1, screen.height - 1)
+                    },
+                    ArrowLeft(player) {
+                        player.x = Math.max(player.x - 1, 0)
+                    },
+                    ArrowRight(player) {
+                        player.x = Math.min(player.x + 1, screen.width - 1)
+                    }
+                }
+
+                const moveFunction = acceptedMoves[command.keyPressed]
+                const player = state.players[command.playerId]
+                if (moveFunction != undefined) moveFunction(player)
             }
             
             // armazena as informações do jogo
