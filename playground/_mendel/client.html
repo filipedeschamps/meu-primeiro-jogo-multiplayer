@@ -19,176 +19,26 @@
 
 <canvas id="screen" width="10" height="10"></canvas>
 
-<script>
-    const screen = document.getElementById('screen')
-    // context é o que realmente usamos para desenhar as coisas
-    const context = screen.getContext('2d')
-    const currentPlayerId = 'player1'
+<script type="module">
+    // módulos
+    import createKeyboardListener from './keyboard-listener.js'
+    import createGame from './game.js'
+    import renderScreen from './render-screen.js'
 
+    // camada jogo
     const game = createGame()
-    const keyboardListener = createKeyboardListener()
+    game.state.currentPlayerId = 'player1'
+    // camada input
+    const keyboardListener = createKeyboardListener(document)
     keyboardListener.subscribe(game.movePlayer)
+    // camada apresentação
+    const screen = document.getElementById('screen')
+    renderScreen(game, screen, requestAnimationFrame)
 
-    // Para testes
-    game.addPlayer({playerId: currentPlayerId, x: 1, y: 1})
+    // para testes
+    game.addPlayer({playerId: game.state.currentPlayerId, x: 1, y: 1})
     game.addPlayer({playerId: 'player2', x: 7, y: 3})
     game.addFruit({fruitId: 'fruit1', x: 8, y: 5})
-
-    // camada de jogo (dados + lógica)
-    // Implementação do design pattern: Factory
-    function createGame() {            
-        // armazena as informações do jogo
-        const state = {
-            players: {},
-            fruits: {}
-        }
-
-        function addPlayer(command) {
-            playerId = command.playerId
-            x = command.x
-            y = command.y
-
-            state.players[playerId] = {
-                playerId,
-                x,
-                y
-            }
-        }
-
-        function removePlayer(playerId) {
-            delete state.players[playerId]
-        }
-
-        function addFruit(command) {
-            fruitId = command.fruitId
-            x = command.x
-            y = command.y
-
-            state.fruits[fruitId] = {
-                fruitId,
-                x,
-                y
-            }
-        }
-
-        function removeFruit(fruitId) {
-            delete state.fruits[fruitId]
-        }
-
-        function movePlayer(command) {
-            console.log(`Moving ${command.playerId} with ${command.keyPressed}`)
-            // Implementação do design pattern: Command
-            // Casa o nome da teclas que devem ter funcionalidade com o nome de suas respectivas funções. Aí é só chamar as funções com o próprio nome da tecla!
-            const acceptedMoves = {
-                // Utilizando as funções max e min, podemos nos livrar completamente dos ifs. Maravilhoso!
-                ArrowUp(player) {
-                    player.y = Math.max(player.y - 1, 0)
-                },
-                ArrowDown(player) {
-                    player.y = Math.min(player.y + 1, screen.height - 1)
-                },
-                ArrowLeft(player) {
-                    player.x = Math.max(player.x - 1, 0)
-                },
-                ArrowRight(player) {
-                    player.x = Math.min(player.x + 1, screen.width - 1)
-                }
-            }
-
-            const moveFunction = acceptedMoves[command.keyPressed]
-            const player = state.players[command.playerId]
-            // importante se proteger bem em ambientes assíncronos!
-            if (player && moveFunction != undefined) {
-                moveFunction(player)
-                checkForFruitCollision(command.playerId)
-            }
-        }
-
-        function checkForFruitCollision(playerId) {
-            player = state.players[playerId]
-
-            for (const fruitId in state.fruits) {
-                fruit = state.fruits[fruitId]
-                console.log(`Verifying collision between ${playerId} and ${fruitId}...`)
-                if (player.x === fruit.x && player.y === fruit.y) {
-                    console.log(`Collision detected!`)
-                    removeFruit(fruitId)
-                }
-            }
-        }
-
-        return {
-            addPlayer,
-            removePlayer,
-            addFruit,
-            removeFruit,
-            movePlayer,
-            state
-        }
-    }
-
-    // componente da camada de Input
-    function createKeyboardListener() {
-        // Implementação do design pattern: Observer
-        // O que isso faz, em termos abstratos, é criar uma lista de funções que vamos chamar sempre que o listener for invocado, para as quais vamos chamar o comando que o listener recebeu. Os outros elementos do jogo vão se "inscrever" nesse subject, o que significa adicionar uma função à lista. Na prática, no nosso jogo, como só uma função é adicionada, o movePlayer, isso dá no mesmo que simplesmente invocar movePlayer(command) em vez de chamar notifyAll() (mais para a frente o servidor também vai se inscrever na lista, na verdade). Mas essa maneira, apesar de ser mais complexa, é muito mais escalável, flexível, e estaticamente desacoplada!
-        const state = {
-            observers: []
-        }
-
-        function subscribe(observerFunction) {
-            state.observers.push(observerFunction)
-        }
-
-        function notifyAll(command) {
-            console.log(`Notifying ${state.observers.length} observers`)
-            
-            for (const observerFunction of state.observers) {
-                observerFunction(command)
-            }
-        }
-        
-        // document é um objeto que implementa EventListener. Essa interface garante um método que permite que ela anuncie objetos do tipo evento. O primeiro argumento especifica qual tipo de evento nós estamos esperando, e o segundo ou um outro objeto que tb implemente EventListener ou uma função.
-        document.addEventListener('keydown', handleKeyDown)
-
-        function handleKeyDown(event) {
-            const keyPressed = event.key
-
-            const command = {
-                playerId: currentPlayerId,
-                keyPressed
-            }
-
-            notifyAll(command)
-        }
-
-        return {
-            subscribe
-        }
-    }
-
-
-    renderScreen()
-
-    function renderScreen() {
-        // clear screen
-        context.fillStyle = 'white'
-        context.clearRect(0, 0, 10, 10)
-        
-        // render players and fruits
-        for (const playerId in game.state.players) {
-            const player = game.state.players[playerId]
-            context.fillStyle = 'black'
-            context.fillRect(player.x, player.y, 1, 1)
-        }
-        for (const fruitId in game.state.fruits) {
-            const fruit = game.state.fruits[fruitId]
-            context.fillStyle = 'green'
-            context.fillRect(fruit.x, fruit.y, 1, 1)
-        }
-
-        // mantem a tela se atualizando, sincronizada com o navegador e de maneira otimizada
-        requestAnimationFrame(renderScreen)
-    }
 </script>
 
 </body>
