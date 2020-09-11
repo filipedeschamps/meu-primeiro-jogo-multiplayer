@@ -1,6 +1,12 @@
 // camada de jogo (dados + lógica)
 // Implementação do design pattern: Factory
-export default function createGame() {            
+export default function createGame(subject) {            
+    // Parâmetro subject: conté a função para observar a camada de rede
+    if (subject) {
+        console.log('[game] Succesfully subscribed to network layer')
+        subject.subscribe(receiveNotification)
+    }
+
     // armazena as informações do jogo
     const state = {
         players: {},
@@ -12,6 +18,22 @@ export default function createGame() {
     }
 
     // Implementação do design pattern: Observer
+    // Funções como observer
+    function receiveNotification(message) {
+        // Define quais tipos de mensagem terão reação
+        const respondsTo = {
+            setup_game(command) {
+                Object.assign(state, command.new_state)
+            }
+        }
+        // 
+        const commandFunction = respondsTo[message.type]
+        console.log('[game] Received new state')
+        if(commandFunction != undefined) {
+            commandFunction(message)
+        }
+    }
+    // Funções como subject
     const observers = []
 
     function subscribe(observerFunction) {
@@ -24,10 +46,6 @@ export default function createGame() {
         for (const observerFunction of observers) {
             observerFunction(command)
         }
-    }
-
-    function setState(newState) {
-        Object.assign(state, newState)
     }
 
     function addPlayer(command) {
@@ -92,7 +110,7 @@ export default function createGame() {
         })
     }
 
-    function start(frequency = 3000) {
+    function start(frequency = 2000) {
         setInterval(addFruit, frequency)
     }
 
@@ -141,7 +159,6 @@ export default function createGame() {
 
     return {
         addPlayer,
-        setState,
         subscribe,
         removePlayer,
         addFruit,

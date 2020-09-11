@@ -7,6 +7,21 @@ export default function createKeyboardListener(document) {
         observers: [],
         playerId: null
     }
+    
+    // document é um objeto que implementa EventListener. Essa interface garante um método que permite que ela anuncie objetos do tipo evento. O primeiro argumento especifica qual tipo de evento nós estamos esperando, e o segundo ou um outro objeto que tb implemente EventListener ou uma função.
+    document.addEventListener('keydown', handleKeyDown)
+    
+    function handleKeyDown(event) {
+        const keyPressed = event.key
+    
+        const command = {
+            type: 'move-player',
+            playerId: state.playerId,
+            keyPressed
+        }
+    
+        notifyAll(command)
+    }
 
     function subscribe(observerFunction) {
         state.observers.push(observerFunction)
@@ -20,27 +35,18 @@ export default function createKeyboardListener(document) {
         }
     }
 
+    function unsubscribeAll() {
+        state.observers = []
+    }
+
     function registerPlayerId(playerId) {
         state.playerId = playerId
     }
     
-    // document é um objeto que implementa EventListener. Essa interface garante um método que permite que ela anuncie objetos do tipo evento. O primeiro argumento especifica qual tipo de evento nós estamos esperando, e o segundo ou um outro objeto que tb implemente EventListener ou uma função.
-    document.addEventListener('keydown', handleKeyDown)
-
-    function handleKeyDown(event) {
-        const keyPressed = event.key
-
-        const command = {
-            type: 'move-player',
-            playerId: state.playerId,
-            keyPressed
-        }
-
-        notifyAll(command)
-    }
 
     return {
         subscribe,
+        unsubscribeAll,
         registerPlayerId
     }
 }
