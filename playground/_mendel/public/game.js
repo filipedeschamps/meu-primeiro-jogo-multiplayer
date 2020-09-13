@@ -1,10 +1,10 @@
 // camada de jogo (dados + lógica)
 // Implementação do design pattern: Factory
 export default function createGame(subject) {            
-    // Parâmetro subject: conté a função para observar a camada de rede
+    // Parâmetro subject: contem a função para observar a camada de rede
     if (subject) {
         console.log('[game] Succesfully subscribed to network layer')
-        subject.subscribe(receiveNotification)
+        subject.subscribe('game', receiveNotification)
     }
 
     // armazena as informações do jogo
@@ -12,8 +12,8 @@ export default function createGame(subject) {
         players: {},
         fruits: {},
         screen: {
-            width: 10,
-            height: 10
+            width: 15,
+            height: 15
         }
     }
 

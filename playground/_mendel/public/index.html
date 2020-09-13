@@ -24,28 +24,31 @@
     // módulos
     import createGame from './game.js'
     import createKeyboardListener from './keyboard-listener.js'
-    import renderScreen from './render-screen.js'
+    import createGraphics from './graphics.js'
 
-    const observers = []
+    const observers = {}
     // camada jogo
     const game = createGame({subscribe})
     // camada input
     const keyboardListener = createKeyboardListener(document)
-    // camada apresentação
-    const screen = document.getElementById('screen')
-
     // camada de rede
     const socket = io()
     let playerId
+    // camada apresentação
+    const screen = document.getElementById('screen')
+    let graphics
+
 
     socket.on('connect', () => {
         playerId = socket.id
         console.log(`> Player connected to Client with id: ${playerId}`)
-        renderScreen(game, screen, playerId, requestAnimationFrame)
+        graphics = createGraphics({subscribe}, screen, game, playerId, requestAnimationFrame)
+        graphics.renderScreen()
     })
 
     socket.on('disconnect', () => {
         keyboardListener.unsubscribeAll()
+        unsubscribe['presentation']
     })
 
     socket.on('setup', (state) => {
@@ -87,15 +90,20 @@
         game.removeFruit(command)
     })
 
-    function subscribe(observerFunction) {
-        observers.push(observerFunction)
+    function subscribe(observerId, observerFunction) {
+        observers[observerId] = observerFunction
+    }
+
+    function unsubscribe(observerId) {
+        delete observers[observerId]
     }
 
     function notifyAll(command) {
-        console.log(`> Notifying ${observers.length} observers`)
+        console.log(`> Notifying ${Object.keys(observers).length} observers`)
         
-        for (const observerFunction of observers) {
-            observerFunction(command)
+        for (const observerFunction in observers) {
+            // console.log(observers[observerFunction])
+            observers[observerFunction](command)
         }
     }
 </script>
