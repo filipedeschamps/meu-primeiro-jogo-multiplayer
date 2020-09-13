@@ -62,7 +62,10 @@
         keyboardListener.registerPlayerId(playerId)
         keyboardListener.subscribe(game.movePlayer)
         keyboardListener.subscribe( (command) => {
-            socket.emit(command.type, command)
+            if (command.keyPressed in game.acceptedMoves) {
+                // console.log('[network] emmiting command to server')
+                socket.emit(command.type, command)
+            }
         })
     })
 
