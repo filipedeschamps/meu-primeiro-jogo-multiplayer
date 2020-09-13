@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Meu Primeiro Jogo Multiplayer</title>
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
 
     <style>
         #screen {
@@ -13,12 +16,33 @@
             width: 600px;
             height: 600px;
         }
+        /* #scoreboard { */
+
+        /* } */
     </style>
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
 
-<canvas id="screen" width="10" height="10"></canvas>
+<div class="container-fluid">
+<div class="row align-items-center justify-content-center">
+    <div class="col-md-auto">
+        <canvas id="screen"></canvas>
+    </div>
+    <div class="col-md-auto">
+        <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Id</th>
+            <th scope="col">Score</th>
+            </tr>
+        </thead>
+        <tbody id="scoreboard"></tbody>
+        </table>
+    </div>
+</div>
+</div>
 
 <script type="module">
     // módulos
