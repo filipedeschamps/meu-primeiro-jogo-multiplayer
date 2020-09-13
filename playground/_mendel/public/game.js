@@ -1,11 +1,21 @@
 // camada de jogo (dados + lógica)
 // Implementação do design pattern: Factory
-export default function createGame(subject) {            
-    // Parâmetro subject: contem a função para observar a camada de rede
-    if (subject) {
-        console.log('[game] Succesfully subscribed to network layer')
-        subject.subscribe('game', receiveNotification)
+export default function createGame(forum) {            
+    // Interação com o forum
+    const respondsTo = {
+        setup_game(command) {
+            console.log('[game]> Received new state')
+            Object.assign(state, command.new_state)
+        },
+        move_player,
+        add_player,
+        remove_player,
+        add_fruit,
+        remove_fruit
     }
+    const notifyForum = forum.subscribe('game', respondsTo)
+    console.log('[game]> Succesfully subscribed to forum')
+
 
     // armazena as informações do jogo
     const state = {
@@ -57,39 +67,7 @@ export default function createGame(subject) {
         }
     })
 
-
-    // Implementação do design pattern: Observer
-    // Funções como observer
-    function receiveNotification(message) {
-        // Define quais tipos de mensagem terão reação
-        const respondsTo = {
-            setup_game(command) {
-                Object.assign(state, command.new_state)
-            }
-        }
-        // 
-        const commandFunction = respondsTo[message.type]
-        console.log('[game] Received new state')
-        if(commandFunction != undefined) {
-            commandFunction(message)
-        }
-    }
-    // Funções como subject
-    const observers = []
-
-    function subscribe(observerFunction) {
-        observers.push(observerFunction)
-    }
-
-    function notifyAll(command) {
-        // console.log(`> Notifying ${observers.length} observers`)
-        
-        for (const observerFunction of observers) {
-            observerFunction(command)
-        }
-    }
-
-    function addPlayer(command) {
+    function add_player(command) {
         const playerId = command.playerId
         const playerX = 'playerX' in command ? command.playerX : Math.floor(Math.random() * state.screen.width)
         const playerY = 'playerY' in command ? command.playerY : Math.floor(Math.random() * state.screen.height)
@@ -103,25 +81,25 @@ export default function createGame(subject) {
         }
 
         // utilizamos um observer em vez de disparar logo aqui o evento para atuar em conformidade com o padrão de Separation of Concerns
-        notifyAll({
-            type: 'add-player',
+        notifyForum({
+            type: 'add_player',
             playerId,
             playerX,
             playerY
         })
     }
     
-    function removePlayer(command) {
+    function remove_player(command) {
         const playerId = command.playerId
         delete state.players[playerId]
 
-        notifyAll({
-            type: 'remove-player',
+        notifyForum({
+            type: 'remove_player',
             playerId,
         })
     }
     
-    function addFruit(command) {
+    function add_fruit(command) {
         // Verifica se já não estourou o limite de frutas
         if (Object.keys(state.fruits).length >= state.fruit_limit) {
             return
@@ -152,7 +130,7 @@ export default function createGame(subject) {
             return
         }
 
-        console.log(`Adding ${fruitId} at x:${fruitX} y:${fruitY}`)
+        console.log(`[game]> Adding fruit ${fruitId} at x:${fruitX} y:${fruitY}`)
 
         state.fruits[fruitId] = {
             fruitId,
@@ -160,20 +138,20 @@ export default function createGame(subject) {
             y: fruitY
         }
 
-        notifyAll({
-            type: 'add-fruit',
+        notifyForum({
+            type: 'add_fruit',
             fruitId,
             fruitX,
             fruitY
         })
     }
 
-    function removeFruit(command) {
+    function remove_fruit(command) {
         const fruitId = command.fruitId
         delete state.fruits[fruitId]
 
-        notifyAll({
-            type: 'remove-fruit',
+        notifyForum({
+            type: 'remove_fruit',
             fruitId
         })
     }
@@ -181,12 +159,11 @@ export default function createGame(subject) {
     function spawnFruits(frequency = 2000) {
         // Limita o máximo de frutas para o tamanho da tela
         state.fruit_limit = Math.min(state.fruit_limit, state.screen.width * state.screen.height)
-        spawnId = setInterval(addFruit, frequency)
+        spawnId = setInterval(add_fruit, frequency)
     }
 
-    function movePlayer(command) {
-        console.log(`> Moving ${command.playerId} with ${command.keyPressed}`)
-        notifyAll(command)
+    function move_player(command) {
+        // console.log(`> Moving ${command.playerId} with ${command.keyPressed}`)
         // Implementação do design pattern: Command
 
         const moveFunction = acceptedMoves[command.keyPressed]
@@ -207,20 +184,19 @@ export default function createGame(subject) {
             if (player.x === fruit.x && player.y === fruit.y) {
                 // console.log(`> Collision detected!`)
                 player.score += settings.fruitValue
-                removeFruit( {fruitId} )
+                remove_fruit( {fruitId} )
             }
         }
     }
 
     return {
         acceptedMoves,
-        addPlayer,
-        subscribe,
-        removePlayer,
-        addFruit,
-        removeFruit,
-        start: spawnFruits,
-        movePlayer,
+        addPlayer: add_player,
+        removePlayer: remove_player,
+        addFruit: add_fruit,
+        removeFruit: remove_fruit,
+        spawnFruits,
+        move_player,
         state
     }
 }
