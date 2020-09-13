@@ -11,11 +11,15 @@ export default function createGame(subject) {
     const state = {
         players: {},
         fruits: {},
-        fruit_limit: 150,
+        fruit_limit: 15,
         screen: {
-            width: 2,
-            height: 2
+            width: 15,
+            height: 15
         }
+    }
+
+    const settings = {
+        fruitValue: 10
     }
 
     // Carrega o ID do timer que gera as frutas do mapa
@@ -90,11 +94,12 @@ export default function createGame(subject) {
         const playerX = 'playerX' in command ? command.playerX : Math.floor(Math.random() * state.screen.width)
         const playerY = 'playerY' in command ? command.playerY : Math.floor(Math.random() * state.screen.height)
         // console.log(`> Adding ${playerId} at x:${playerX} y:${playerY}`)
-        
+
         state.players[playerId] = {
             playerId,
             x: playerX,
-            y: playerY
+            y: playerY,
+            score: 0
         }
 
         // utilizamos um observer em vez de disparar logo aqui o evento para atuar em conformidade com o padrão de Separation of Concerns
@@ -174,6 +179,8 @@ export default function createGame(subject) {
     }
 
     function spawnFruits(frequency = 2000) {
+        // Limita o máximo de frutas para o tamanho da tela
+        state.fruit_limit = Math.min(state.fruit_limit, state.screen.width * state.screen.height)
         spawnId = setInterval(addFruit, frequency)
     }
 
@@ -198,7 +205,8 @@ export default function createGame(subject) {
             const fruit = state.fruits[fruitId]
             // console.log(`> Verifying collision between ${playerId} and ${fruitId}...`)
             if (player.x === fruit.x && player.y === fruit.y) {
-                console.log(`> Collision detected!`)
+                // console.log(`> Collision detected!`)
+                player.score += settings.fruitValue
                 removeFruit( {fruitId} )
             }
         }
