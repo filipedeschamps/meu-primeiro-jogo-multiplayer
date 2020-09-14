@@ -21,7 +21,7 @@ export default function createGame(forum) {
     const state = {
         players: {},
         fruits: {},
-        fruit_limit: 15,
+        fruit_limit: 30,
         screen: {
             width: 15,
             height: 15

@@ -62,7 +62,7 @@ export default function createGraphics(forum, document, game, playerId, requestA
         }
         for (const fruitId in game.state.fruits) {
             const fruit = game.state.fruits[fruitId]
-            context.fillStyle = 'green'
+            context.fillStyle = 'limegreen'
             context.fillRect(fruit.x, fruit.y, 1, 1)
         }
         
