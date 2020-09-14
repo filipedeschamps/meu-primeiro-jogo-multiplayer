@@ -4,8 +4,8 @@ export default function createGame(){
         players:{ },
         fruits: { },
         screen: {
-            width: 10,
-            height: 10
+            width: 15,
+            height: 15
         }
     };
 
@@ -20,9 +20,7 @@ export default function createGame(){
         observers.push(observerFunction);
     }
 
-    function notifyAll(command){
-        // console.log(`Notify ${observers.length} observers`);
-
+    function notifyAll(command){        
         for( const observerFunction of observers){
             observerFunction(command);
         }
@@ -35,17 +33,23 @@ export default function createGame(){
     function addPlayer(command) {
         const playerX = 'playerX' in command ? command.playerX : Math.floor(Math.random() * state.screen.width);
         const playerY = 'playerY' in command ? command.playerY : Math.floor(Math.random() * state.screen.height);
+        const name = 'name' in command ? command.name : 'Desconhecido';
+        const score = 0;
 
         state.players[command.playerId] = {
             x: playerX,
-            y: playerY
+            y: playerY,
+            score,
+            name
         }
 
         notifyAll({
             type: 'add-player',
             playerId: command.playerId,
             playerX,
-            playerY
+            playerY,
+            score,
+            name
         });
     }
 
@@ -92,25 +96,25 @@ export default function createGame(){
 
         const acceptedMoves = {
             ArrowUp(player) {
-                console.log("UP");
+                // console.log("UP");
                 if(player.y - 1 >= 0) {
                     player.y -=  1;
                 }
             },
             ArrowRight(player) {
-                console.log("Right");
+                // console.log("Right");
                 if(player.x + 1 < state.screen.width) {
                     player.x +=  1;
                 }
             },
             ArrowDown(player){
-                console.log("Down");
+                // console.log("Down");
                 if(player.y + 1 < state.screen.height) {
                     player.y +=  1;
                 }
             },
             ArrowLeft(player) {
-                console.log("left");
+                // console.log("left");
                 if(player.x - 1 >= 0) {
                     player.x -=  1;
                 }
@@ -137,6 +141,7 @@ export default function createGame(){
             if(player.x === fruit.x && player.y === fruit.y){
                 // console.log(`COLISSION BETWEEN ${playerId} and ${fruitId}`);
                 removeFruit({ fruitId });
+                player.score += 1;
             }
         }                
     }

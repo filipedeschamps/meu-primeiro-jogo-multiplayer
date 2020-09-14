@@ -12,25 +12,23 @@ app.use(express.static('public'));
 const game = createGame(); 
 game.start();
 
-game.subscribe((command) => {
-    // console.log(`> Emiting ${command.type}`);
+game.subscribe((command) => {    
     sockets.emit(command.type, command);
 })
 
 sockets.on('connection',(socket)=>{
-    const playerId = socket.id;
-    // console.log(`> Player connected on Server with id: ${playerId}`);
+    const playerId = socket.id;    
 
-    game.addPlayer({ playerId });
+    socket.on('create-player', (name)=>{
+        game.addPlayer({ playerId, name });      
+    });    
     
     socket.emit('setup', game.state);
     
     socket.on('disconnect', ()=>{
-        game.removePlayer({ playerId });
-        console.log(`> Player ${playerId} Disconected `);
-        console.log('\n');
+        console.log(`Disconected ${playerId}`);
+        game.removePlayer({ playerId });        
         console.log(game.state);
-        console.log('\n');
     });
     
     socket.on('move-player', (command)=>{
@@ -39,15 +37,12 @@ sockets.on('connection',(socket)=>{
 
         game.movePlayer(command);
     });
-
-    console.log('\n');
-    console.log(game.state);
-    console.log('\n');
+    
 })
 
-server.listen(3000, ()=>{
-    console.log('\n> Server listening on port: 3000');
-    console.log('> -------  http://localhost:3000\n');
+server.listen(3005, ()=>{
+    console.log('\n> Server listening on port: 3005');
+    console.log('> -------  http://localhost:3005\n');
     
 });
 
