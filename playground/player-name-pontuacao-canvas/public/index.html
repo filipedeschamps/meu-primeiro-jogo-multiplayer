@@ -39,18 +39,19 @@
     <div class="content">
         <canvas id="screen" width="15" height="15"></canvas>
         <canvas id="canvas-score" width="420" height="360"></canvas>
-    </div>
+    </div>      
 
     <script type="module">
         import createGame from './game.js';
         import createKeyboardListener from './keyboard-listener.js';
         import renderScreen from './render-screen.js';        
-        import renderScore from './render-score.js';
+        import renderScore from './render-score.js';   
         
-        
+        const collectFruitAudio = new Audio('./sounds/collect.mp3')
+        const collect100FruitAudio = new Audio('./sounds/100-collect.mp3')        
         const playerName = prompt('Seu nome de jogador');
 
-        if(playerName !== ''){
+        if(playerName !== ''){                        
             gameConnection();
         }       
         
@@ -106,7 +107,24 @@
                 game.addFruit(command);            
             });
 
-            socket.on('remove-fruit', (command) =>{            
+            socket.on('remove-fruit', (command) =>{   
+                const playerId = socket.id;
+                const score = game.state.players[playerId].score;
+                const multipleOf100Remainder = score % 100;
+
+                if (multipleOf100Remainder !== 0) {
+                    collectFruitAudio.pause();
+                    collectFruitAudio.currentTime = 0;
+                    collectFruitAudio.play();
+                }
+
+                if (multipleOf100Remainder === 0 && score !== 0) {
+                    collectFruitAudio.pause();
+                    collect100FruitAudio.pause();
+                    collect100FruitAudio.currentTime = 0;
+                    collect100FruitAudio.play();
+                }        
+                
                 game.removeFruit(command);            
             });
         }

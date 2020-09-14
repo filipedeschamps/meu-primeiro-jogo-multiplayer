@@ -95,26 +95,22 @@ export default function createGame(){
         notifyAll(command);
 
         const acceptedMoves = {
-            ArrowUp(player) {
-                // console.log("UP");
+            ArrowUp(player) {                
                 if(player.y - 1 >= 0) {
                     player.y -=  1;
                 }
             },
-            ArrowRight(player) {
-                // console.log("Right");
+            ArrowRight(player) {                
                 if(player.x + 1 < state.screen.width) {
                     player.x +=  1;
                 }
             },
             ArrowDown(player){
-                // console.log("Down");
                 if(player.y + 1 < state.screen.height) {
                     player.y +=  1;
                 }
             },
             ArrowLeft(player) {
-                // console.log("left");
                 if(player.x - 1 >= 0) {
                     player.x -=  1;
                 }
@@ -136,10 +132,8 @@ export default function createGame(){
         const player = state.players[playerId];
         for(const fruitId in state.fruits){
             const fruit = state.fruits[fruitId];
-            // console.log(`Checking ${playerId} and ${fruitId}`);
 
             if(player.x === fruit.x && player.y === fruit.y){
-                // console.log(`COLISSION BETWEEN ${playerId} and ${fruitId}`);
                 removeFruit({ fruitId });
                 player.score += 1;
             }

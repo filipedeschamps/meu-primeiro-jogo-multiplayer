@@ -25,18 +25,16 @@ sockets.on('connection',(socket)=>{
     
     socket.emit('setup', game.state);
     
-    socket.on('disconnect', ()=>{
-        console.log(`Disconected ${playerId}`);
-        game.removePlayer({ playerId });        
-        console.log(game.state);
+    socket.on('disconnect', ()=>{        
+        game.removePlayer({ playerId });                
     });
     
     socket.on('move-player', (command)=>{
         command.playerId = playerId;
         command.type = 'move-player';
-
         game.movePlayer(command);
-    });
+    });    
+    
     
 })
 
@@ -50,11 +48,11 @@ server.listen(3005, ()=>{
 /**
  * 1 - Reajustar tamanho do canvas com informações vindas do servidor
  * 2 - Fazer "unsubscribe" dos observers (caso conexão cair)
- * 3 - Implementar sistema de pontuação
+ * 3 - Implementar sistema de pontuação ( OK )
  * 4 - Emitir som a cada ponto marcado e um som diferente a cada 100 pontos marcados
  * 5 - Fazer jogador dar a volta no canvas
  * 6 - Refatorar funções anônimas 
  * 7 - Filtrar os comandos enviados ao backend
- * 8 - Gitpod com versão fica do nodejs
+ * 8 - Gitpod com versão fixa do nodejs
  * 
  */
