@@ -1,17 +1,53 @@
 // camada de apresentação
 // Implementação do padrão de design: Dependency Injection
-export default function createGraphics(forum, screen, game, playerId, requestAnimationFrame) {
+export default function createGraphics(forum, document, game, playerId, requestAnimationFrame) {
+    const screen = document.getElementById('screen')
+    const scoreboard = document.getElementById('scoreboard')
+    // Inscrição no forum
     const respondsTo = {
         setup_game(command) {
             console.log(`[graphics]> Received new state. ${command.new_state.screen.width} x ${command.new_state.screen.height}`)
             screen.width = command.new_state.screen.width
             screen.height = command.new_state.screen.height
+            // Adiciona a lista de pontuação
+            for (const playerId in command.new_state.players) {
+                const player = command.new_state.players[playerId]
+                scoreboardData.push({
+                    id: playerId,
+                    score: player.score
+                })
+            }
+            updateScoreboard()
+        },
+        add_player(command) {
+            // console.log('[graphics]> Recording new player')
+            // console.log(command)
+            scoreboardData.push({
+                id: command.playerId,
+                score: 0
+            })
+            updateScoreboard()
+        },
+        remove_player(command) {
+            scoreboardData = scoreboardData.filter( (player) => {
+                return player.id != command.playerId
+            })
+            updateScoreboard()
+        },
+        player_scored(command) {
+            scoreboardData.forEach( (player) => {
+                if (player.id == command.playerId) {
+                    player.score = command.new_score
+                }
+            })
+            updateScoreboard()
         }
     }
-    console.log('[graphics]> Succesfully subscribed to forum')
     const notifyForum = forum.subscribe('graphics', respondsTo)
+    console.log('[graphics]> Succesfully subscribed to forum')
 
     const context = screen.getContext('2d')
+    let scoreboardData = []
     
     function renderScreen() {
         // clear screen
@@ -41,6 +77,20 @@ export default function createGraphics(forum, screen, game, playerId, requestAni
         requestAnimationFrame( () => {
             renderScreen()
         })
+    }
+
+    function updateScoreboard() {
+        // Ordena a lista de jogadores por pontuação
+        const playerScores = scoreboardData.sort( (player1, player2) => {
+            return player2.score - player1.score
+        })
+
+        let new_html = ''
+        playerScores.forEach( (player, rank) => {
+            new_html += `<tr><td>${rank}</td><td>${player.id}</td><td>${player.score}</td></tr>`
+        })
+
+        scoreboard.innerHTML = new_html
     }
 
     return {

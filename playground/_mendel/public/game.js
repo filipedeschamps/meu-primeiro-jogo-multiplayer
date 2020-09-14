@@ -69,6 +69,7 @@ export default function createGame(forum) {
 
     function add_player(command) {
         const playerId = command.playerId
+        const receivedCoordinates = 'playerX' in command && 'playerY' in command
         const playerX = 'playerX' in command ? command.playerX : Math.floor(Math.random() * state.screen.width)
         const playerY = 'playerY' in command ? command.playerY : Math.floor(Math.random() * state.screen.height)
         // console.log(`> Adding ${playerId} at x:${playerX} y:${playerY}`)
@@ -80,13 +81,15 @@ export default function createGame(forum) {
             score: 0
         }
 
-        // utilizamos um observer em vez de disparar logo aqui o evento para atuar em conformidade com o padrão de Separation of Concerns
-        notifyForum({
-            type: 'add_player',
-            playerId,
-            playerX,
-            playerY
-        })
+        // somente notificamos se não houver recebido as coordenadas
+        if (!receivedCoordinates) {
+            notifyForum({
+                type: 'add_player',
+                playerId,
+                playerX,
+                playerY
+            })
+        }
     }
     
     function remove_player(command) {
@@ -130,7 +133,7 @@ export default function createGame(forum) {
             return
         }
 
-        console.log(`[game]> Adding fruit ${fruitId} at x:${fruitX} y:${fruitY}`)
+        // console.log(`[game]> Adding fruit ${fruitId} at x:${fruitX} y:${fruitY}`)
 
         state.fruits[fruitId] = {
             fruitId,
@@ -185,16 +188,21 @@ export default function createGame(forum) {
                 // console.log(`> Collision detected!`)
                 player.score += settings.fruitValue
                 remove_fruit( {fruitId} )
+                notifyForum({
+                    type: 'player_scored',
+                    playerId,
+                    new_score: player.score
+                })
             }
         }
     }
 
     return {
         acceptedMoves,
-        addPlayer: add_player,
-        removePlayer: remove_player,
-        addFruit: add_fruit,
-        removeFruit: remove_fruit,
+        add_player,
+        remove_player,
+        add_fruit,
+        remove_fruit,
         spawnFruits,
         move_player,
         state

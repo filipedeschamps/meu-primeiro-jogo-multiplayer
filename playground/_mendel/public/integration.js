@@ -1,7 +1,9 @@
 export default function createForum() {
     const observers = {}
 
-    function subscribe(observerId, observeMethod) {
+    // Implementação do design pattern: Observer
+    // O que isso faz, em termos abstratos, é criar uma lista de observadores. Todos são notificados sempre que um deles invoca a função notifyAll. Os elementos do jogo vão se "inscrever" nesse forum, o que significa adicionar uma função à lista (ou um objeto que funciona para traduzir um nome de tipo de evento firetamente para uma funcionaldiade). Quem se inscreve pode enviar mensagens e receber mensagens
+function subscribe(observerId, observeMethod) {
         // Inscreve um observer e lhe fornece o canal para emitir suas próprias mensagens
         // Se receber um objeto em vez de função, trata como dicionário de tipo para funcionalidade
         if (typeof observeMethod === 'object') {
@@ -23,7 +25,7 @@ export default function createForum() {
     }
 
     function notifyAll(emitterId, message) {
-        console.log(`[forum]> Observer "${emitterId}" emitting to ${Object.keys(observers).length - 1} observers`)
+        // console.log(`[forum]> Observer "${emitterId}" emitting to ${Object.keys(observers).length - 1} observers`)
         // Adiciona o emissor na mensagem
         message['emitter'] = emitterId
         

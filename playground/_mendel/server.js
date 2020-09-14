@@ -26,11 +26,15 @@ sockets.on('connection', (socket) => {
     const playerId = socket.id
     console.log(`[server]> Player connected with id: ${playerId}`)
 
-    game.addPlayer( {playerId: playerId} )
-    console.log(game.state)
+    notifyForum({ type: 'add_player', playerId })
+    // game.addPlayer( {playerId: playerId} )
+    // console.log(game.state)
     
     socket.on('disconnect', (socket) => {
-        game.removePlayer( {playerId: playerId} )
+        notifyForum({
+            type: 'remove_player',
+            playerId
+        })
         console.log(`[server]> Player disconnected: ${playerId}`)
     })
 

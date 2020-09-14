@@ -38,7 +38,9 @@
             <th scope="col">Score</th>
             </tr>
         </thead>
-        <tbody id="scoreboard"></tbody>
+        <tbody id="scoreboard">
+            <tr scope="col" id="empty-row"></tr>
+        </tbody>
         </table>
     </div>
 </div>
@@ -61,7 +63,6 @@
     const socket = io()
     let playerId
     // camada apresentação
-    const screen = document.getElementById('screen')
     let graphics
 
     const respondsTo = {
@@ -88,7 +89,7 @@
         console.log(`[network]> Receiving "setup" from server...`)
         console.log(state)
         keyboardListener.registerPlayerId(playerId)
-        graphics = createGraphics(forum, screen, game, playerId, requestAnimationFrame)
+        graphics = createGraphics(forum, document, game, playerId, requestAnimationFrame)
         graphics.renderScreen()
         // Propaga a mensagem pelo forum
         notifyForum({
@@ -106,7 +107,7 @@
         'remove_fruit'
     ]
     for (const event of propagate_events) {
-        console.log(event)
+        // console.log(event)
         socket.on(event, (command) => {
             // console.log(`[network]> Propagating event ${event}`)
             if (!command.sourceId || command.sourceId !== playerId) {
