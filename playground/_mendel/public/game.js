@@ -14,7 +14,7 @@ export default function createGame(forum) {
         remove_fruit
     }
     const notifyForum = forum.subscribe('game', respondsTo)
-    console.log('[game]> Succesfully subscribed to forum')
+    // console.log('[game]> Succesfully subscribed to forum')
 
 
     // armazena as informações do jogo

@@ -44,7 +44,7 @@ export default function createGraphics(forum, document, game, playerId, requestA
         }
     }
     const notifyForum = forum.subscribe('graphics', respondsTo)
-    console.log('[graphics]> Succesfully subscribed to forum')
+    // console.log('[graphics]> Succesfully subscribed to forum')
 
     const context = screen.getContext('2d')
     let scoreboardData = []
@@ -57,7 +57,7 @@ export default function createGraphics(forum, document, game, playerId, requestA
         // render players and fruits
         for (const playerId in game.state.players) {
             const player = game.state.players[playerId]
-            context.fillStyle = 'black'
+            context.fillStyle = 'rgb(0,0,0,0.2)'
             context.fillRect(player.x, player.y, 1, 1)
         }
         for (const fruitId in game.state.fruits) {
@@ -87,7 +87,11 @@ export default function createGraphics(forum, document, game, playerId, requestA
 
         let new_html = ''
         playerScores.forEach( (player, rank) => {
-            new_html += `<tr><td>${rank}</td><td>${player.id}</td><td>${player.score}</td></tr>`
+            if (player.id === playerId) {
+                new_html += `<tr class="active"><td>${rank+1}</td><td>${player.id}</td><td>${player.score}</td></tr>`
+            } else {
+                new_html += `<tr><td>${rank+1}</td><td>${player.id}</td><td>${player.score}</td></tr>`
+            }
         })
 
         scoreboard.innerHTML = new_html

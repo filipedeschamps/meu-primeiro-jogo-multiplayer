@@ -16,9 +16,9 @@
             width: 600px;
             height: 600px;
         }
-        /* #scoreboard { */
-
-        /* } */
+        tr.active {
+            background-color: #ededed;
+        }
     </style>
     <script src="/socket.io/socket.io.js"></script>
 </head>
@@ -30,6 +30,7 @@
         <canvas id="screen"></canvas>
     </div>
     <div class="col-md-auto">
+        <h1 class="display-4">scores</h1>
         <table class="table">
         <thead>
             <tr>
@@ -71,13 +72,13 @@
             if (command.keyPressed in game.acceptedMoves) {
                 // Utilizado para evitar repetir o comando com o retorno do servidor
                 command['sourceId'] = playerId
-                console.log('[network]> Emmiting command to server')
+                // console.log('[network]> Emmiting command to server')
                 socket.emit(command.type, command)
             }
         }
     }
-    console.log('[network]> Succesfully subscribed to forum')
     const notifyForum = forum.subscribe('network', respondsTo)
+    // console.log('[network]> Succesfully subscribed to forum')
 
 
     socket.on('connect', () => {
