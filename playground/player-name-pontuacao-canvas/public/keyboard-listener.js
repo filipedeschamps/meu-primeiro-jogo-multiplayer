@@ -2,6 +2,12 @@ export default function createKeyboardListener(){
 
     const state = {
         observers: [],
+        commands: [
+            "ArrowUp",
+            "ArrowRight",
+            "ArrowDown",
+            "ArrowLeft",
+        ],
         playerId: null
     };
 
@@ -14,8 +20,6 @@ export default function createKeyboardListener(){
     }
 
     function notifyAll(command){
-        //console.log(`Notify ${state.observers.length} observers`);
-
         for( const observerFunction of state.observers){
             observerFunction(command);
         }
@@ -25,14 +29,17 @@ export default function createKeyboardListener(){
 
     function handleKeyDown(event){                            
         const keyPressed = event.key;
-
+        
         const command = {
             type: 'move-player',
             playerId: state.playerId,
             keyPressed
         }
 
-        notifyAll(command);            
+        if(state.commands.includes(keyPressed)){
+            notifyAll(command);                        
+        }
+
     }
 
     return {

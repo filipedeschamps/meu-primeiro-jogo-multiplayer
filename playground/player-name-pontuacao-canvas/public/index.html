@@ -96,7 +96,7 @@
                 game.removePlayer(command);
             });
 
-            socket.on('move-player', (command) =>{  
+            socket.on('move-player', (command) =>{               
                 const playerId = socket.id;
                 if(playerId !== command.playerId){
                     game.movePlayer(command);
