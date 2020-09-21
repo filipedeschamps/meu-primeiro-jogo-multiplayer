@@ -1,0 +1,66 @@
+body {
+  margin: 40px 0 0 0;
+  padding: 0;
+  background-color: #eee;
+  text-align: center;
+}
+
+#screen {
+  border: 1px solid #ccc;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  image-rendering: -moz-crisp-edges;
+  width: 400px;
+  height: 400px;
+  -webkit-box-shadow: 0px 4px 17px 0px rgba(0, 0, 0, 0.19);
+  -moz-box-shadow: 0px 4px 17px 0px rgba(0, 0, 0, 0.19);
+  box-shadow: 0px 4px 17px 0px rgba(0, 0, 0, 0.19);
+  margin-bottom: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+#score-table {
+  font-size: 13px;
+  vertical-align: top;
+  display: inline-block;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#score-table tr.header td {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 8px;
+}
+
+#score-table tr.footer td {
+  border-top: 1px solid #ccc;
+  font-size: 11px;
+}
+
+#score-table td {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+#score-table .socket-id {
+  font-weight: normal;
+  color: #222;
+  width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+}
+
+#score-table .score-value {
+  font-weight: bold;
+  color: #000;
+  text-align: right;
+}
+
+#score-table .current-player .socket-id,
+#score-table .current-player .score-value {
+  color: #bdaa27;
+}
