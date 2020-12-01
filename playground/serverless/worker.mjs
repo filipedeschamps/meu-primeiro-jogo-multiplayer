@@ -306,7 +306,7 @@ export class ChatRoom {
     const game_data = this.storage.get("GAME");
     if (game_data != null) {
       webSocket.send(JSON.stringify({emit: 'debug', data:game_data}));
-      game.setState(JSON.parse(game_data));
+      //game.setState(JSON.parse(game_data));
     }
     game.start();
 
