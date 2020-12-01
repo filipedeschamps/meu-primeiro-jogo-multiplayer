@@ -63,6 +63,7 @@ jobs:
                 -X PUT \
                 -F "metadata=@metadata.json;type=application/json" \
                 -F "script=@worker.mjs;type=application/javascript+module" \
+                -F "script=@game.js;type=application/javascript" \
                 -F "html=@index.html;type=application/octet-stream" > /dev/null
           }
 
@@ -80,6 +81,7 @@ jobs:
                 -X PUT \
                 -F "metadata=@bootstrap-metadata.json;type=application/json" \
                 -F "script=@worker.mjs;type=application/javascript+module" \
+                -F "script=@game.js;type=application/javascript" \
                 -F "html=@index.html;type=application/octet-stream" > /dev/null
             rm bootstrap-metadata.json
           }
