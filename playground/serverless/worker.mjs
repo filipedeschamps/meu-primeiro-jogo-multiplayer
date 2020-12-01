@@ -280,7 +280,6 @@ export class ChatRoom {
         }
         let data = JSON.parse(msg.data);
         if (data.emit == 'move-player') {
-          data.data = JSON.parse(data.data);
           data.data.playerId = playerId;
           data.data.type = 'move-player';
           await game.movePlayer(data.data);
