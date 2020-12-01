@@ -299,7 +299,7 @@ export class ChatRoom {
   
     async function addFruit(command) {
 
-        if (state.fruits.length < 3) {
+        if (state.fruits.length < 1) {
           const fruitId = command ? command.fruitId : Math.floor(Math.random() * 10000000)
           const fruitX = command ? command.fruitX : Math.floor(Math.random() * state.screen.width)
           const fruitY = command ? command.fruitY : Math.floor(Math.random() * state.screen.height)
@@ -476,7 +476,7 @@ export class ChatRoom {
     const game_data = await this.storage.get("GAME");
     webSocket.send(JSON.stringify({emit: 'debug', data:game_data}));
     if (game_data != null) {
-      game.setState(game_data);
+      //game.setState(game_data);
     }
     game.start();
 
