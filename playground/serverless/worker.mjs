@@ -302,11 +302,26 @@ export class ChatRoom {
     // Set event handlers to receive messages.
     let receivedUserInfo = false;
 
-    webSocket.send(JSON.stringify({emit: "setup", data:{}}));
+    const game = createGame();
+    game.start();
 
+    game.subscribe((command) => {
+        //console.log(`> Emitting ${command.type}`)
+        //sockets.emit(command.type, command)
+    });
+
+    const playerId =  Math.random(); //socket.id
+
+    game.addPlayer({ playerId: playerId });
+
+    //socket.emit('setup', game.state)
+    webSocket.send(JSON.stringify({emit: "setup", data:game.state}));
+
+    /*
     setInterval(function() {
       webSocket.send(JSON.stringify({emit: "interval", data:{r:Math.random()}}));
     }, 1000);
+    */
 
     webSocket.addEventListener("message", async msg => {
       try {
@@ -328,6 +343,14 @@ export class ChatRoom {
           }));
           return;
         }
+        */
+
+        /*
+        socket.on('move-player', (command) => {
+          command.playerId = playerId
+          command.type = 'move-player'
+          game.movePlayer(command)
+        });
         */
 
         // I guess we'll use JSON.
@@ -396,6 +419,14 @@ export class ChatRoom {
     // On "close" and "error" events, remove the WebSocket from the sessions list and broadcast
     // a quit message.
     let closeOrErrorHandler = evt => {
+
+      /*
+      socket.on('disconnect', () => {
+        game.removePlayer({ playerId: playerId })
+        console.log(`> Player disconnected: ${playerId}`)
+      })
+      */
+
       session.quit = true;
       this.sessions = this.sessions.filter(member => member !== session);
       if (session.name) {
