@@ -575,7 +575,7 @@ class RateLimiterClient {
   }
 }
 
-function createGame() {
+function createGame(storage) {
   const state = {
       players: {},
       fruits: {},
@@ -583,6 +583,10 @@ function createGame() {
           width: 10,
           height: 10
       }
+  }
+
+  function saveState() {
+      await storage.put("GAME", JSON.stringify(state));
   }
 
   const observers = []
@@ -617,6 +621,8 @@ function createGame() {
           y: playerY
       }
 
+      saveState();
+
       notifyAll({
           type: 'add-player',
           playerId: playerId,
@@ -629,6 +635,8 @@ function createGame() {
       const playerId = command.playerId
 
       delete state.players[playerId]
+
+      saveState();
 
       notifyAll({
           type: 'remove-player',
@@ -646,6 +654,8 @@ function createGame() {
           y: fruitY
       }
 
+      saveState();
+
       notifyAll({
           type: 'add-fruit',
           fruitId: fruitId,
@@ -658,6 +668,8 @@ function createGame() {
       const fruitId = command.fruitId
 
       delete state.fruits[fruitId]
+
+      saveState();
 
       notifyAll({
           type: 'remove-fruit',

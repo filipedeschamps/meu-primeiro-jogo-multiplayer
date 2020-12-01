@@ -1,4 +1,4 @@
-export default function createGame(storage) {
+export default function createGame() {
     const state = {
         players: {},
         fruits: {},
@@ -6,10 +6,6 @@ export default function createGame(storage) {
             width: 10,
             height: 10
         }
-    }
-
-    function saveState() {
-        await storage.put("GAME", JSON.stringify(state));
     }
 
     const observers = []
@@ -44,8 +40,6 @@ export default function createGame(storage) {
             y: playerY
         }
 
-        saveState();
-
         notifyAll({
             type: 'add-player',
             playerId: playerId,
@@ -58,8 +52,6 @@ export default function createGame(storage) {
         const playerId = command.playerId
 
         delete state.players[playerId]
-
-        saveState();
 
         notifyAll({
             type: 'remove-player',
@@ -77,8 +69,6 @@ export default function createGame(storage) {
             y: fruitY
         }
 
-        saveState();
-
         notifyAll({
             type: 'add-fruit',
             fruitId: fruitId,
@@ -91,8 +81,6 @@ export default function createGame(storage) {
         const fruitId = command.fruitId
 
         delete state.fruits[fruitId]
-
-        saveState();
 
         notifyAll({
             type: 'remove-fruit',
