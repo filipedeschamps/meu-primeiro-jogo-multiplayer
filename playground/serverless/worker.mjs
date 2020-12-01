@@ -474,7 +474,7 @@ export class ChatRoom {
     webSocket.send(JSON.stringify({emit: 'debug', data:game_data}));
     if (game_data != null) {
       webSocket.send(JSON.stringify({emit: 'debug', data:JSON.parse(game_data)}));
-      game.setState(game_data);
+      //game.setState(game_data);
     }
     game.start();
 
