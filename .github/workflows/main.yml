@@ -16,6 +16,7 @@ jobs:
           ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           AUTH_TOKEN: ${{ secrets.CF_API_TOKEN }}
           SCRIPT_NAME: "edge-game"
+        working-directory: playground/serverless
         run: |
           set -euo pipefail
 
@@ -105,8 +106,6 @@ jobs:
                 -X POST --data "{\"name\": \"$SCRIPT_NAME-$1\", \"script\": \"$SCRIPT_NAME\", \"class\": \"$1\"}" | \
                 jq -r .id
           }
-
-          cd playground/serverless
 
           if [ ! -e metadata.json ]; then
             # If metadata.json doesn't exist we assume this is first-time setup and we need to create the
