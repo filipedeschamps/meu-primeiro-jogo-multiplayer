@@ -304,6 +304,10 @@ export class ChatRoom {
 
     webSocket.send(JSON.stringify({emit: "setup", data:{}}));
 
+    setInterval(function() {
+      webSocket.send(JSON.stringify({emit: "interval", data:{r:Math.random()}}));
+    }, 1000);
+
     webSocket.addEventListener("message", async msg => {
       try {
         if (session.quit) {

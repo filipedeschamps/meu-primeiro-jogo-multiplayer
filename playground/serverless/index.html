@@ -39,6 +39,7 @@
                 console.log('open');
                 currentWebSocket = ws;
                 //ws.send(JSON.stringify({name: username}));
+                //currentWebSocket.send(JSON.stringify({message: chatInput.value}));
             });
 
             ws.addEventListener("message", event => {
