@@ -238,7 +238,7 @@ export class ChatRoom {
         }
     }
   
-    function saveState() {
+    async function saveState() {
         await this.storage.put("GAME", JSON.stringify(state));
     }
   
@@ -264,7 +264,7 @@ export class ChatRoom {
         Object.assign(state, newState)
     }
   
-    function addPlayer(command) {
+    async function addPlayer(command) {
         const playerId = command.playerId
         const playerX = 'playerX' in command ? command.playerX : Math.floor(Math.random() * state.screen.width)
         const playerY = 'playerY' in command ? command.playerY : Math.floor(Math.random() * state.screen.height)
@@ -274,30 +274,30 @@ export class ChatRoom {
             y: playerY
         }
   
-        saveState();
-  
         notifyAll({
             type: 'add-player',
             playerId: playerId,
             playerX: playerX,
             playerY: playerY
         })
+
+        await saveState();
     }
   
-    function removePlayer(command) {
+    async function removePlayer(command) {
         const playerId = command.playerId
   
         delete state.players[playerId]
-  
-        saveState();
   
         notifyAll({
             type: 'remove-player',
             playerId: playerId
         })
+
+        await saveState();
     }
   
-    function addFruit(command) {
+    async function addFruit(command) {
         const fruitId = command ? command.fruitId : Math.floor(Math.random() * 10000000)
         const fruitX = command ? command.fruitX : Math.floor(Math.random() * state.screen.width)
         const fruitY = command ? command.fruitY : Math.floor(Math.random() * state.screen.height)
@@ -307,30 +307,30 @@ export class ChatRoom {
             y: fruitY
         }
   
-        saveState();
-  
         notifyAll({
             type: 'add-fruit',
             fruitId: fruitId,
             fruitX: fruitX,
             fruitY: fruitY
         })
+
+        await saveState();
     }
   
-    function removeFruit(command) {
+    async function removeFruit(command) {
         const fruitId = command.fruitId
   
         delete state.fruits[fruitId]
-  
-        saveState();
   
         notifyAll({
             type: 'remove-fruit',
             fruitId: fruitId,
         })
+
+        await saveState();
     }
   
-    function movePlayer(command) {
+    async function movePlayer(command) {
         notifyAll(command)
   
         const acceptedMoves = {
@@ -363,12 +363,12 @@ export class ChatRoom {
   
         if (player && moveFunction) {
             moveFunction(player)
-            checkForFruitCollision(playerId)
+            await checkForFruitCollision(playerId)
         }
   
     }
   
-    function checkForFruitCollision(playerId) {
+    async function checkForFruitCollision(playerId) {
         const player = state.players[playerId]
   
         for (const fruitId in state.fruits) {
@@ -377,7 +377,7 @@ export class ChatRoom {
   
             if (player.x === fruit.x && player.y === fruit.y) {
                 console.log(`COLLISION between ${playerId} and ${fruitId}`)
-                removeFruit({ fruitId: fruitId })
+                await removeFruit({ fruitId: fruitId })
             }
         }
     }
@@ -485,7 +485,7 @@ export class ChatRoom {
 
     const playerId =  Math.random(); //socket.id
 
-    game.addPlayer({ playerId: playerId });
+    await game.addPlayer({ playerId: playerId });
 
     //socket.emit('setup', game.state)
     webSocket.send(JSON.stringify({emit: "setup", data:game.state}));
@@ -518,7 +518,7 @@ export class ChatRoom {
         if (data.emit == 'move-player') {
           data.data.playerId = playerId;
           data.data.type = 'move-player';
-          game.movePlayer(data.data);
+          await game.movePlayer(data.data);
         }
 
         if (!receivedUserInfo) {
@@ -585,7 +585,7 @@ export class ChatRoom {
     // a quit message.
     let closeOrErrorHandler = evt => {
 
-      game.removePlayer({ playerId: playerId });
+      await game.removePlayer({ playerId: playerId });
 
       session.quit = true;
       this.sessions = this.sessions.filter(member => member !== session);
