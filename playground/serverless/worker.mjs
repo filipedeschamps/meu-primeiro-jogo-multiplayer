@@ -107,17 +107,11 @@ export default {
         case "api":
           // This is a request for `/api/...`, call the API handler.
           return handleApiRequest(path.slice(1), request, env);
-
-        case "game.js":
-          return new Response(game, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
-        case "keyboard-listener.js":
-          return new Response(keyboard_listener, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
-        case "render-screen.js":
-          return new Response(render_screen, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
-        case "socket.io":
-          return new Response(socket_io, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
-
         default:
+          if (url.pathname == '/game.js') return new Response(game, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
+          if (url.pathname == '/keyboard-listener.js') return new Response(keyboard_listener, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
+          if (url.pathname == '/render-screen.js') return new Response(render_screen, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
+          if (url.pathname == '/socket.io/socket.io.js') return new Response(socket_io, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
           return new Response("Not found", {status: 404});
       }
     });
