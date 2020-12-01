@@ -47,15 +47,11 @@
                 });
 
                 ws.addEventListener("message", event => {
-                    console.log(event.data);
-                    let data = JSON.parse(event.data);
-                    let command = data.data;
-                    
-                    console.log(data);
+                    let command = JSON.parse(event.data);
 
-                    if (data.emit == 'setup') {
+                    if (command.emit == 'setup') {
                         const playerId = Math.random(); //socket.id;
-                        game.setState(command);
+                        game.setState(command.data);
                         keyboardListener.registerPlayerId(playerId);
                         keyboardListener.subscribe(game.movePlayer);
                         keyboardListener.subscribe((command) => {
@@ -63,17 +59,17 @@
                         });
                     }
 
-                    if (data.emit == 'add-player') {
+                    if (command.type == 'add-player') {
                         console.log(`Receiving ${command.type} -> ${command.playerId}`)
                         game.addPlayer(command)
                     }
 
-                    if (data.emit == 'remove-player') {
+                    if (command.type == 'remove-player') {
                         console.log(`Receiving ${command.type} -> ${command.playerId}`)
                         game.removePlayer(command)
                     }
 
-                    if (data.emit == 'move-player') {
+                    if (command.type == 'move-player') {
                         console.log(`Receiving ${command.type} -> ${command.playerId}`)
                         const playerId = Math.random(); //socket.id;
                         if (playerId !== command.playerId) {
@@ -81,12 +77,12 @@
                         }
                     }
 
-                    if (data.emit == 'add-fruit') {
+                    if (command.type == 'add-fruit') {
                         console.log(`Receiving ${command.type} -> ${command.fruitId}`)
                         game.addFruit(command)
                     }
 
-                    if (data.emit == 'remove-fruit') {
+                    if (command.type == 'remove-fruit') {
                         console.log(`Receiving ${command.type} -> ${command.fruitId}`)
                         game.removeFruit(command)
                     }
