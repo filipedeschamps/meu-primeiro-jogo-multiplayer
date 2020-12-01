@@ -101,8 +101,8 @@ export class ChatRoom {
         setInterval(addFruit, frequency)
     }
   
-    function notifyAll(command) {
-      parent.broadcast(command);
+    async function notifyAll(command) {
+      await parent.broadcast(command);
     }
   
     function setState(newState) {
@@ -119,7 +119,7 @@ export class ChatRoom {
             y: playerY
         }
   
-        notifyAll({
+        await notifyAll({
             type: 'add-player',
             playerId: playerId,
             playerX: playerX,
@@ -134,7 +134,7 @@ export class ChatRoom {
   
         delete state.players[playerId]
   
-        notifyAll({
+        await notifyAll({
             type: 'remove-player',
             playerId: playerId
         })
@@ -153,7 +153,7 @@ export class ChatRoom {
               y: fruitY
           }
     
-          notifyAll({
+          await notifyAll({
               type: 'add-fruit',
               fruitId: fruitId,
               fruitX: fruitX,
@@ -169,7 +169,7 @@ export class ChatRoom {
   
         delete state.fruits[fruitId]
   
-        notifyAll({
+        await notifyAll({
             type: 'remove-fruit',
             fruitId: fruitId,
         })
@@ -178,7 +178,7 @@ export class ChatRoom {
     }
   
     async function movePlayer(command) {
-        notifyAll(command)
+      await notifyAll(command)
   
         const acceptedMoves = {
             ArrowUp(player) {
@@ -306,7 +306,7 @@ export class ChatRoom {
     webSocket.addEventListener("error", closeOrErrorHandler);
   }
 
-  broadcast(message) {
+  async broadcast(message) {
     let quitters = [];
     this.sessions = this.sessions.filter(session => {
       try {
