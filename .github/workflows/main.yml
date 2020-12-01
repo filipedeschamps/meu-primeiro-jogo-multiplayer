@@ -61,8 +61,8 @@ jobs:
             curl_api https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/workers/scripts/$SCRIPT_NAME \
                 -X PUT \
                 -F "metadata=@metadata.json;type=application/json" \
-                -F "script=@playground/serverless/worker.mjs;type=application/javascript+module" \
-                -F "html=@playground/serverless/index.html;type=application/octet-stream" > /dev/null
+                -F "script=@worker.mjs;type=application/javascript+module" \
+                -F "html=@index.html;type=application/octet-stream" > /dev/null
           }
 
           # upload_bootstrap_script is a temporary hack to work around a chicken-and-egg problem: in order
@@ -78,8 +78,8 @@ jobs:
             curl_api https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/workers/scripts/$SCRIPT_NAME \
                 -X PUT \
                 -F "metadata=@bootstrap-metadata.json;type=application/json" \
-                -F "script=@playground/serverless/worker.mjs;type=application/javascript+module" \
-                -F "html=@playground/serverless/index.html;type=application/octet-stream" > /dev/null
+                -F "script=@worker.mjs;type=application/javascript+module" \
+                -F "html=@index.html;type=application/octet-stream" > /dev/null
             rm bootstrap-metadata.json
           }
 
@@ -105,6 +105,8 @@ jobs:
                 -X POST --data "{\"name\": \"$SCRIPT_NAME-$1\", \"script\": \"$SCRIPT_NAME\", \"class\": \"$1\"}" | \
                 jq -r .id
           }
+
+          cd playground/serverless
 
           if [ ! -e metadata.json ]; then
             # If metadata.json doesn't exist we assume this is first-time setup and we need to create the
