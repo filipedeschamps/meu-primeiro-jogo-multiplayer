@@ -270,10 +270,12 @@ export class ChatRoom {
     webSocket.accept();
 
     // Set up our rate limiter client.
+    /*
     let limiterId = this.env.limiters.idFromName(ip);
     let limiter = new RateLimiterClient(
         () => this.env.limiters.get(limiterId),
         err => webSocket.close(1011, err.stack));
+    */
 
     // Create our session and add it to the sessions list.
     // We don't send any messages to the client until it has sent us the initial user info
@@ -299,6 +301,9 @@ export class ChatRoom {
 
     // Set event handlers to receive messages.
     let receivedUserInfo = false;
+
+    webSocket.send(JSON.stringify({emit: "setup", data:{}}));
+
     webSocket.addEventListener("message", async msg => {
       try {
         if (session.quit) {

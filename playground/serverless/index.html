@@ -25,10 +25,37 @@
             
             const game = createGame()
             const keyboardListener = createKeyboardListener(document)
-            
 
-            const socket = io({path: '/api/room/game/websocket'})
+            let currentWebSocket = null;
+            let hostname = window.location.host;
+            if (hostname == "localhost") {
+                hostname = "edge.bohr.cloud";
+            }
 
+            //const socket = io({path: '/api/room/game/websocket'})
+            const ws = new WebSocket("wss://" + hostname + "/api/room/game/websocket");
+
+            ws.addEventListener("open", event => {
+                console.log('open');
+                currentWebSocket = ws;
+                //ws.send(JSON.stringify({name: username}));
+            });
+
+            ws.addEventListener("message", event => {
+                let data = JSON.parse(event.data);
+                console.log(data);
+            });
+
+            ws.addEventListener("close", event => {
+                console.log("WebSocket closed, reconnecting:", event.code, event.reason);
+                //rejoin();
+            });
+            ws.addEventListener("error", event => {
+                console.log("WebSocket error, reconnecting:", event);
+                //rejoin();
+            });
+
+            /*
             socket.on('connect', () => {
                 const playerId = socket.id
                 console.log(`Player connected on Client with id: ${playerId}`)
@@ -77,6 +104,7 @@
                 console.log(`Receiving ${command.type} -> ${command.fruitId}`)
                 game.removeFruit(command)
             })
+            */
         </script>
     </body>
 </html>
