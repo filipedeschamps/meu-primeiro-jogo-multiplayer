@@ -303,10 +303,10 @@ export class ChatRoom {
     let receivedUserInfo = false;
 
     const game = createGame(this.storage);
-    const game_data = this.storage.get("GAME");
-    if (game_data != null) {
-      webSocket.send(JSON.stringify({emit: 'debug', data:game_data}));
-      //game.setState(JSON.parse(game_data));
+    const game_data = await this.storage.get("GAME");
+    webSocket.send(JSON.stringify({emit: 'debug', data:game_data}));
+    if (!((Object.keys(obj).length === 0) && (obj.constructor === Object))) {
+      game.setState(game_data);
     }
     game.start();
 

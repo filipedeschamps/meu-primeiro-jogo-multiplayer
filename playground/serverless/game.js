@@ -9,7 +9,7 @@ export default function createGame(storage) {
     }
 
     function saveState() {
-        storage.put("GAME", JSON.stringify(state));
+        await storage.put("GAME", JSON.stringify(state));
     }
 
     const observers = []
