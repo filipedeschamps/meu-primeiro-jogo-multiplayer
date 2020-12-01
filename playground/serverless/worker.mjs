@@ -583,7 +583,7 @@ export class ChatRoom {
 
     // On "close" and "error" events, remove the WebSocket from the sessions list and broadcast
     // a quit message.
-    let closeOrErrorHandler = evt => {
+    let closeOrErrorHandler = async evt => {
 
       await game.removePlayer({ playerId: playerId });
 
