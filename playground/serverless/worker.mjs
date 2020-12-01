@@ -469,7 +469,7 @@ export class ChatRoom {
     // Set event handlers to receive messages.
     let receivedUserInfo = false;
 
-    const game = createGame();
+    const game = this.createGame();
     const game_data = await this.storage.get("GAME");
     webSocket.send(JSON.stringify({emit: 'debug', data:game_data}));
     if (!((Object.keys(obj).length === 0) && (obj.constructor === Object))) {
