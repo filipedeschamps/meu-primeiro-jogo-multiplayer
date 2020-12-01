@@ -108,10 +108,6 @@ export default {
           // This is a request for `/api/...`, call the API handler.
           return handleApiRequest(path.slice(1), request, env);
 
-          import keyboard_listener from "keyboard-listener.js";
-          import render_screen from "render-screen.js";
-          import socket_io from "socket.io/socket.io.js";
-          
         case "game.js":
           return new Response(game, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
         case "keyboard-listener":
