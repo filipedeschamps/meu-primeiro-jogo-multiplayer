@@ -26,6 +26,7 @@
             const keyboardListener = createKeyboardListener(document)
 
             let currentWebSocket = null;
+            let playerId = null;
             let hostname = window.location.host;
             if (hostname == "localhost") {
                 hostname = "edge.bohr.cloud";
@@ -33,24 +34,19 @@
 
             let startSocket = function() {
                 currentWebSocket = null;
+                playerId = null;
                 const ws = new WebSocket("wss://" + hostname + "/api/room/game/websocket");
 
                 ws.addEventListener("open", event => {
                     console.log('open');
                     currentWebSocket = ws;
-
-                    const playerId = Math.random(); //socket.id;
-                    console.log(`Player connected on Client with id: ${playerId}`);
-
-                    const screen = document.getElementById('screen');
-                    renderScreen(screen, game, requestAnimationFrame, playerId);
                 });
 
                 ws.addEventListener("message", event => {
                     let command = JSON.parse(event.data);
 
                     if (command.emit == 'setup') {
-                        const playerId = Math.random(); //socket.id;
+                        playerId = command.playerId;
                         game.setState(command.data);
                         keyboardListener.registerPlayerId(playerId);
                         keyboardListener.subscribe(game.movePlayer);

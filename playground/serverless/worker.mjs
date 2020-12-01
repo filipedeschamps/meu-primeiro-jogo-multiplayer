@@ -270,7 +270,7 @@ export class ChatRoom {
     const playerId =  Math.random();
     await game.addPlayer({ playerId: playerId });
 
-    webSocket.send(JSON.stringify({emit: "setup", data:game.state}));
+    webSocket.send(JSON.stringify({emit: "setup", data:game.state, playerId:playerId}));
 
     webSocket.addEventListener("message", async msg => {
       try {
