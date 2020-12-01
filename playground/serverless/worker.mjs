@@ -575,7 +575,7 @@ class RateLimiterClient {
   }
 }
 
-function createGame(storage) {
+function createGame(_storage) {
   const state = {
       players: {},
       fruits: {},
@@ -586,7 +586,7 @@ function createGame(storage) {
   }
 
   function saveState() {
-      await storage.put("GAME", JSON.stringify(state));
+      await _storage.put("GAME", JSON.stringify(state));
   }
 
   const observers = []
