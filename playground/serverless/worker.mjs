@@ -318,7 +318,7 @@ export class ChatRoom {
         return false;
       }
     });
-    quitters.forEach(quitter => {
+    quitters.forEach(async quitter => {
       await game.removePlayer({ playerId: quitter.playerId });
     });
   }
