@@ -299,7 +299,7 @@ export class ChatRoom {
   
     async function addFruit(command) {
 
-        if (state.fruits.length < 1) {
+        if (state.fruits.length < 3) {
           const fruitId = command ? command.fruitId : Math.floor(Math.random() * 10000000)
           const fruitX = command ? command.fruitX : Math.floor(Math.random() * state.screen.width)
           const fruitY = command ? command.fruitY : Math.floor(Math.random() * state.screen.height)
@@ -471,6 +471,8 @@ export class ChatRoom {
 
     // Set event handlers to receive messages.
     let receivedUserInfo = false;
+
+    await this.storage.delete("GAME");
 
     const game = this.createGame(this.storage);
     const game_data = await this.storage.get("GAME");
