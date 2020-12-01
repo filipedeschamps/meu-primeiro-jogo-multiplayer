@@ -282,7 +282,7 @@ export class ChatRoom {
         if (data.emit == 'move-player') {
           data.data.playerId = playerId;
           data.data.type = 'move-player';
-          await game.movePlayer(data.data);
+          await game.movePlayer(JSON.parse(data.data));
         }
       } catch (err) {
         webSocket.send(JSON.stringify({error: err.stack}));

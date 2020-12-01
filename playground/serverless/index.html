@@ -47,6 +47,7 @@
                 });
 
                 ws.addEventListener("message", event => {
+                    console.log(event.data);
                     let data = JSON.parse(event.data);
                     let command = data.data;
                     
@@ -54,11 +55,11 @@
 
                     if (data.emit == 'setup') {
                         const playerId = Math.random(); //socket.id;
-                        game.setState(state);
+                        game.setState(command);
                         keyboardListener.registerPlayerId(playerId);
                         keyboardListener.subscribe(game.movePlayer);
                         keyboardListener.subscribe((command) => {
-                            currentWebSocket.send(JSON.stringify({emit: 'move-player', data:chatInput.value}));
+                            currentWebSocket.send(JSON.stringify({emit: 'move-player', data:command}));
                         });
                     }
 
