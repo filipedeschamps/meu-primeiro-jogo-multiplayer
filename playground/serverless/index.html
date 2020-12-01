@@ -55,11 +55,14 @@
                         keyboardListener.subscribe((command) => {
                             currentWebSocket.send(JSON.stringify({emit: 'move-player', data:command}));
                         });
+                        const screen = document.getElementById('screen');
+                        renderScreen(screen, game, requestAnimationFrame, playerId);
                     }
 
                     if (command.type == 'add-player') {
                         console.log(`Receiving ${command.type} -> ${command.playerId}`)
-                        game.addPlayer(command)
+                        if (playerId == null) playerId = command.playerId;
+                        game.addPlayer(command);
                     }
 
                     if (command.type == 'remove-player') {
