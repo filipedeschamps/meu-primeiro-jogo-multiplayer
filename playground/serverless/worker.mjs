@@ -110,9 +110,9 @@ export default {
 
         case "game.js":
           return new Response(game, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
-        case "keyboard-listener":
+        case "keyboard-listener.js":
           return new Response(keyboard_listener, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
-        case "render-screen":
+        case "render-screen.js":
           return new Response(render_screen, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
         case "socket.io":
           return new Response(socket_io, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
