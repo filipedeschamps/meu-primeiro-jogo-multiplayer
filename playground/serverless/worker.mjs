@@ -472,8 +472,6 @@ export class ChatRoom {
     // Set event handlers to receive messages.
     let receivedUserInfo = false;
 
-    await this.storage.delete("GAME");
-
     const game = this.createGame(this.storage);
     const game_data = await this.storage.get("GAME");
     webSocket.send(JSON.stringify({emit: 'debug', data:game_data}));
