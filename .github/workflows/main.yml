@@ -74,7 +74,7 @@ jobs:
           #
           # This is obviously dumb and we (Cloudflare) will come up with something better soon.
           upload_bootstrap_script() {
-            echo '{"main_module": "playground\\serverless\\worker.mjs"}' > bootstrap-metadata.json
+            echo '{"main_module": "worker.mjs"}' > bootstrap-metadata.json
             curl_api https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/workers/scripts/$SCRIPT_NAME \
                 -X PUT \
                 -F "metadata=@bootstrap-metadata.json;type=application/json" \
@@ -115,7 +115,7 @@ jobs:
 
             cat > metadata.json << __EOF__
           {
-            "main_module": "playground\\serverless\\worker.mjs",
+            "main_module": "worker.mjs",
             "bindings": [
               {
                 "type": "durable_object_namespace",
