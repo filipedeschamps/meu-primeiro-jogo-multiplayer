@@ -302,7 +302,7 @@ export class ChatRoom {
     let quitters = [];
     this.sessions = this.sessions.filter(session => {
       try {
-        session.webSocket.send(message);
+        session.webSocket.send(JSON.stringify(message));
         return true;
       } catch (err) {
         session.quit = true;
