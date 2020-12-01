@@ -58,7 +58,7 @@ import HTML from "index.html";
 import game from "game.js";
 import keyboard_listener from "keyboard-listener.js";
 import render_screen from "render-screen.js";
-import socket_io from "socket.io/socket.io.js";
+import socket_io from "socket.io.js";
 
 // `handleErrors()` is a little utility function that can wrap an HTTP request handler in a
 // try/catch and return errors to the client. You probably wouldn't want to use this in production
