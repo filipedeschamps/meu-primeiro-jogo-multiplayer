@@ -273,7 +273,7 @@ export class ChatRoom {
     if (game_data != null) game.setState(game_data);
     game.start();
 
-    const playerId =  getRandomInt(0, Number.MAX_SAFE_INTEGER);
+    const playerId =  this.getRandomInt(0, Number.MAX_SAFE_INTEGER);
     await game.addPlayer({ playerId: playerId });
 
     webSocket.send(JSON.stringify({emit: "setup", data:game.state, playerId:playerId}));
