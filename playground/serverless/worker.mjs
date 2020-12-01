@@ -2,7 +2,6 @@ import HTML from "index.html";
 import game from "game.js";
 import keyboard_listener from "keyboard-listener.js";
 import render_screen from "render-screen.js";
-import socket_io from "socket.io.js";
 
 async function handleErrors(request, func) {
   try {
