@@ -44,8 +44,10 @@
 
                 ws.addEventListener("message", event => {
                     let command = JSON.parse(event.data);
+                    console.log(command);
 
                     if (command.emit == 'setup') {
+                        console.log('setup');
                         playerId = command.playerId;
                         game.setState(command.data);
                         keyboardListener.registerPlayerId(playerId);

@@ -255,6 +255,12 @@ export class ChatRoom {
     });
   }
 
+  getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }  
+
   async handleSession(webSocket) {
 
     webSocket.accept();
@@ -267,7 +273,7 @@ export class ChatRoom {
     if (game_data != null) game.setState(game_data);
     game.start();
 
-    const playerId =  Math.random();
+    const playerId =  getRandomInt(0, Number.MAX_SAFE_INTEGER);
     await game.addPlayer({ playerId: playerId });
 
     webSocket.send(JSON.stringify({emit: "setup", data:game.state, playerId:playerId}));
