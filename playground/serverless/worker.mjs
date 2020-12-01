@@ -302,7 +302,7 @@ export class ChatRoom {
     // Set event handlers to receive messages.
     let receivedUserInfo = false;
 
-    const game = createGame();
+    const game = game();
     game.start();
 
     game.subscribe((command) => {
