@@ -97,17 +97,13 @@ export class ChatRoom {
       await storage.put("GAME", state);
     }
   
-    const observers = []
-  
     function start() {
         const frequency = 2000
         setInterval(addFruit, frequency)
     }
   
     function notifyAll(command) {
-        for (const observerFunction of observers) {
-            observerFunction(command)
-        }
+      broadcast(command);
     }
   
     function setState(newState) {
@@ -296,6 +292,10 @@ export class ChatRoom {
 
     webSocket.addEventListener("message", async msg => {
       try {
+        if (session.quit) {
+          webSocket.close(1011, "WebSocket broken.");
+          return;
+        }
         let data = JSON.parse(msg.data);
         if (data.emit == 'move-player') {
           data.data.playerId = playerId;
@@ -308,40 +308,30 @@ export class ChatRoom {
     });
 
     let closeOrErrorHandler = async evt => {
-      await game.removePlayer({ playerId: playerId });
+      session.quit = true;
       this.sessions = this.sessions.filter(member => member !== session);
+      await game.removePlayer({ playerId: playerId });
     };
     webSocket.addEventListener("close", closeOrErrorHandler);
     webSocket.addEventListener("error", closeOrErrorHandler);
   }
 
   broadcast(message) {
-    // Apply JSON if we weren't given a string to start with.
-    if (typeof message !== "string") {
-      message = JSON.stringify(message);
-    }
-
-    // Iterate over all the sessions sending them messages.
     let quitters = [];
     this.sessions = this.sessions.filter(session => {
-      if (session.name) {
-        try {
-          session.webSocket.send(message);
-          return true;
-        } catch (err) {
-          // Whoops, this connection is dead. Remove it from the list and arrange to notify
-          // everyone below.
-          session.quit = true;
-          quitters.push(session);
-          return false;
-        }
-      } else {
-        // This session hasn't sent the initial user info message yet, so we're not sending them
-        // messages yet (no secret lurking!). Queue the message to be sent later.
-        session.blockedMessages.push(message);
+      try {
+        session.webSocket.send(message);
         return true;
+      } catch (err) {
+        session.quit = true;
+        quitters.push(session);
+        return false;
       }
     });
-
+    quitters.forEach(quitter => {
+      if (quitter.name) {
+        this.broadcast({quit: quitter.name});
+      }
+    });
   }
 }
