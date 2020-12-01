@@ -39,7 +39,7 @@ export default {
     });
   }
 }
-/*
+
 async function handleApiRequest(path, request, env) {
 
   switch (path[0]) {
@@ -75,7 +75,7 @@ async function handleApiRequest(path, request, env) {
       return new Response("Not found", {status: 404});
   }
 }
-*/
+
 export class ChatRoom {
   constructor(controller, env) {
     this.storage = controller.storage;

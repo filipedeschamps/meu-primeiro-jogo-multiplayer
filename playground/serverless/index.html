@@ -13,7 +13,6 @@
                 height: 400px;
             }
         </style>
-        <script src="/socket.io/socket.io.js"></script>
     </head>
     <body>
         <canvas id="screen" width="10" height="10"></canvas>
@@ -32,80 +31,80 @@
                 hostname = "edge.bohr.cloud";
             }
 
-            //const socket = io({path: '/api/room/game/websocket'})
-            const ws = new WebSocket("wss://" + hostname + "/api/room/game/websocket");
+            let startSocket = function() {
+                currentWebSocket = null;
+                const ws = new WebSocket("wss://" + hostname + "/api/room/game/websocket");
 
-            ws.addEventListener("open", event => {
-                console.log('open');
-                currentWebSocket = ws;
-                //ws.send(JSON.stringify({name: username}));
-                //currentWebSocket.send(JSON.stringify({message: chatInput.value}));
-            });
+                ws.addEventListener("open", event => {
+                    console.log('open');
+                    currentWebSocket = ws;
 
-            ws.addEventListener("message", event => {
-                let data = JSON.parse(event.data);
-                console.log(data);
-            });
+                    const playerId = Math.random(); //socket.id;
+                    console.log(`Player connected on Client with id: ${playerId}`);
 
-            ws.addEventListener("close", event => {
-                console.log("WebSocket closed, reconnecting:", event.code, event.reason);
-                //rejoin();
-            });
-            ws.addEventListener("error", event => {
-                console.log("WebSocket error, reconnecting:", event);
-                //rejoin();
-            });
+                    const screen = document.getElementById('screen');
+                    renderScreen(screen, game, requestAnimationFrame, playerId);
+                });
 
-            /*
-            socket.on('connect', () => {
-                const playerId = socket.id
-                console.log(`Player connected on Client with id: ${playerId}`)
+                ws.addEventListener("message", event => {
+                    let data = JSON.parse(event.data);
+                    let command = data.data;
+                    
+                    console.log(data);
 
-                const screen = document.getElementById('screen')
-                renderScreen(screen, game, requestAnimationFrame, playerId)
-            })
+                    if (data.emit == 'setup') {
+                        const playerId = Math.random(); //socket.id;
+                        game.setState(state);
+                        keyboardListener.registerPlayerId(playerId);
+                        keyboardListener.subscribe(game.movePlayer);
+                        keyboardListener.subscribe((command) => {
+                            currentWebSocket.send(JSON.stringify({emit: 'move-player', data:chatInput.value}));
+                        });
+                    }
 
-            socket.on('setup', (state) => {
-                const playerId = socket.id
-                game.setState(state)
+                    if (data.emit == 'add-player') {
+                        console.log(`Receiving ${command.type} -> ${command.playerId}`)
+                        game.addPlayer(command)
+                    }
 
-                keyboardListener.registerPlayerId(playerId)
-                keyboardListener.subscribe(game.movePlayer)
-                keyboardListener.subscribe((command) => {
-                    socket.emit('move-player', command)
-                })
-            })
+                    if (data.emit == 'remove-player') {
+                        console.log(`Receiving ${command.type} -> ${command.playerId}`)
+                        game.removePlayer(command)
+                    }
 
-            socket.on('add-player', (command) => {
-                console.log(`Receiving ${command.type} -> ${command.playerId}`)
-                game.addPlayer(command)
-            })
+                    if (data.emit == 'move-player') {
+                        console.log(`Receiving ${command.type} -> ${command.playerId}`)
+                        const playerId = Math.random(); //socket.id;
+                        if (playerId !== command.playerId) {
+                            game.movePlayer(command)
+                        }
+                    }
 
-            socket.on('remove-player', (command) => {
-                console.log(`Receiving ${command.type} -> ${command.playerId}`)
-                game.removePlayer(command)
-            })
+                    if (data.emit == 'add-fruit') {
+                        console.log(`Receiving ${command.type} -> ${command.fruitId}`)
+                        game.addFruit(command)
+                    }
 
-            socket.on('move-player', (command) => {
-                console.log(`Receiving ${command.type} -> ${command.playerId}`)
+                    if (data.emit == 'remove-fruit') {
+                        console.log(`Receiving ${command.type} -> ${command.fruitId}`)
+                        game.removeFruit(command)
+                    }
 
-                const playerId = socket.id
+                });
 
-                if (playerId !== command.playerId) {
-                    game.movePlayer(command)
-                }
-            })
+                ws.addEventListener("close", event => {
+                    console.log("WebSocket closed, reconnecting:", event.code, event.reason);
+                    startSocket();
+                });
+                ws.addEventListener("error", event => {
+                    console.log("WebSocket error, reconnecting:", event);
+                    startSocket();
+                });
 
-            socket.on('add-fruit', (command) => {
-                console.log(`Receiving ${command.type} -> ${command.fruitId}`)
-                game.addFruit(command)
-            })
+            }
 
-            socket.on('remove-fruit', (command) => {
-                console.log(`Receiving ${command.type} -> ${command.fruitId}`)
-                game.removeFruit(command)
-            })
-            */
+            startSocket();
+
         </script>
     </body>
 </html>
