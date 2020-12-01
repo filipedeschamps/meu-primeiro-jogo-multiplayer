@@ -67,7 +67,6 @@
 
                     if (command.type == 'move-player') {
                         console.log(`Receiving ${command.type} -> ${command.playerId}`)
-                        const playerId = Math.random(); //socket.id;
                         if (playerId !== command.playerId) {
                             game.movePlayer(command)
                         }
