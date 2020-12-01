@@ -228,7 +228,7 @@ export class ChatRoom {
     this.lastTimestamp = 0;
   }
 
-  createGame() {
+  createGame(storage) {
     const state = {
         players: {},
         fruits: {},
@@ -239,7 +239,7 @@ export class ChatRoom {
     }
   
     async function saveState() {
-        await this.storage.put("GAME", JSON.stringify(state));
+      await storage.put("GAME", JSON.stringify(state));
     }
   
     const observers = []
@@ -469,7 +469,7 @@ export class ChatRoom {
     // Set event handlers to receive messages.
     let receivedUserInfo = false;
 
-    const game = this.createGame();
+    const game = this.createGame(this.storage);
     const game_data = await this.storage.get("GAME");
     webSocket.send(JSON.stringify({emit: 'debug', data:game_data}));
     if (game_data != null) {
