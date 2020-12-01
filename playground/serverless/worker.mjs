@@ -472,7 +472,7 @@ export class ChatRoom {
     const game = this.createGame();
     const game_data = await this.storage.get("GAME");
     webSocket.send(JSON.stringify({emit: 'debug', data:game_data}));
-    if (!((Object.keys(game_data).length === 0) && (game_data.constructor === Object))) {
+    if (game_data != null) {
       game.setState(game_data);
     }
     game.start();
