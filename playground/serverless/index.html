@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
@@ -28,7 +27,7 @@
             const keyboardListener = createKeyboardListener(document)
             
 
-            const socket = io()
+            const socket = io({path: '/api/room/game/websocket'})
 
             socket.on('connect', () => {
                 const playerId = socket.id
