@@ -151,4 +151,4 @@ function createGame() {
         subscribe,
         start
     }
-}();
+};

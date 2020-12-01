@@ -56,6 +56,9 @@
 // larger sites should continue to use Workers KV to serve assets.)
 import HTML from "index.html";
 import game from "game.js";
+import keyboard_listener from "keyboard-listener.js";
+import render_screen from "render-screen.js";
+import socket_io from "socket.io/socket.io.js";
 
 // `handleErrors()` is a little utility function that can wrap an HTTP request handler in a
 // try/catch and return errors to the client. You probably wouldn't want to use this in production
@@ -105,9 +108,21 @@ export default {
           // This is a request for `/api/...`, call the API handler.
           return handleApiRequest(path.slice(1), request, env);
 
-        default:
+          import keyboard_listener from "keyboard-listener.js";
+          import render_screen from "render-screen.js";
+          import socket_io from "socket.io/socket.io.js";
+          
+        case "game.js":
           return new Response(game, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
-          //return new Response("Not found", {status: 404});
+        case "keyboard-listener":
+          return new Response(keyboard_listener, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
+        case "render-screen":
+          return new Response(render_screen, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
+        case "socket.io":
+          return new Response(socket_io, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
+
+        default:
+          return new Response("Not found", {status: 404});
       }
     });
   }
