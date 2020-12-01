@@ -61,8 +61,8 @@ jobs:
             curl_api https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/workers/scripts/$SCRIPT_NAME \
                 -X PUT \
                 -F "metadata=@metadata.json;type=application/json" \
-                -F "script=@playground/serverless/worker.mjs;type=application/javascript+module" \
-                -F "html=@playground/serverless/index.html;type=application/octet-stream" > /dev/null
+                -F "script=@playground\\serverless\\worker.mjs;type=application/javascript+module" \
+                -F "html=@playground\\serverless\\index.html;type=application/octet-stream" > /dev/null
           }
 
           # upload_bootstrap_script is a temporary hack to work around a chicken-and-egg problem: in order
@@ -74,12 +74,12 @@ jobs:
           #
           # This is obviously dumb and we (Cloudflare) will come up with something better soon.
           upload_bootstrap_script() {
-            echo '{"main_module": "playground/serverless/worker.mjs"}' > bootstrap-metadata.json
+            echo '{"main_module": "playground\\serverless\\worker.mjs"}' > bootstrap-metadata.json
             curl_api https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/workers/scripts/$SCRIPT_NAME \
                 -X PUT \
                 -F "metadata=@bootstrap-metadata.json;type=application/json" \
-                -F "script=@playground/serverless/worker.mjs;type=application/javascript+module" \
-                -F "html=@playground/serverless/index.html;type=application/octet-stream" > /dev/null
+                -F "script=@playground\\serverless\\worker.mjs;type=application/javascript+module" \
+                -F "html=@playground\\serverless\\index.html;type=application/octet-stream" > /dev/null
             rm bootstrap-metadata.json
           }
 
@@ -115,7 +115,7 @@ jobs:
 
             cat > metadata.json << __EOF__
           {
-            "main_module": "playground/serverless/worker.mjs",
+            "main_module": "playground\\serverless\\worker.mjs",
             "bindings": [
               {
                 "type": "durable_object_namespace",
