@@ -93,7 +93,7 @@ export class ChatRoom {
     }
   
     async function saveState() {
-      await parent.storage.put("GAME", state);
+      await parent.storage.put("GAME_EDGE", state);
     }
   
     function start() {
@@ -265,15 +265,17 @@ export class ChatRoom {
 
     webSocket.accept();
 
-    let session = {webSocket};
+    const playerId =  this.getRandomInt(0, Number.MAX_SAFE_INTEGER);
+
+    let session = {webSocket, playerId};
     this.sessions.push(session);
 
     const game = this.createGame(this);
-    const game_data = await this.storage.get("GAME");
+    const game_data = await this.storage.get("GAME_EDGE");
     if (game_data != null) game.setState(game_data);
     game.start();
 
-    const playerId =  this.getRandomInt(0, Number.MAX_SAFE_INTEGER);
+    
     await game.addPlayer({ playerId: playerId });
 
     webSocket.send(JSON.stringify({emit: "setup", data:game.state, playerId:playerId}));
@@ -317,9 +319,7 @@ export class ChatRoom {
       }
     });
     quitters.forEach(quitter => {
-      if (quitter.name) {
-        this.broadcast({quit: quitter.name});
-      }
+      await game.removePlayer({ playerId: quitter.playerId });
     });
   }
 }
