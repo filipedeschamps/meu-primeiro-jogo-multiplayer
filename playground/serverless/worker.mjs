@@ -239,7 +239,7 @@ export class ChatRoom {
     }
   
     async function saveState() {
-      await storage.put("GAME", JSON.stringify(state));
+      await storage.put("GAME", state);
     }
   
     const observers = []
