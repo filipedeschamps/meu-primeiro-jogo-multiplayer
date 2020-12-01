@@ -302,7 +302,11 @@ export class ChatRoom {
     // Set event handlers to receive messages.
     let receivedUserInfo = false;
 
-    const game = createGame();
+    const game = createGame(this.storage);
+    const game_data = this.storage.get("GAME");
+    if (game_data != null) {
+      game.setState(JSON.parse(game_data));
+    }
     game.start();
 
     game.subscribe((command) => {
@@ -400,8 +404,8 @@ export class ChatRoom {
         this.broadcast(dataStr);
 
         // Save message.
-        let key = new Date(data.timestamp).toISOString();
-        await this.storage.put(key, dataStr);
+        //let key = new Date(data.timestamp).toISOString();
+        //await this.storage.put(key, dataStr);
       } catch (err) {
         // Report any exceptions directly back to the client. As with our handleErrors() this
         // probably isn't what you'd want to do in production, but it's convenient when testing.
