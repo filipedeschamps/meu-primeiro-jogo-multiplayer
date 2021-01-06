@@ -5,9 +5,9 @@
 </p>
 
 # meu-primeiro-jogo-multiplayer
-Um jogo multiplayer simples o suficiente para qualquer pesssoa aprender conceitos importantes sobre **arquitetura** e **desenvolvimento de software**.
+Um jogo multiplayer simples o suficiente para qualquer pessoa aprender conceitos importantes sobre **arquitetura** e **desenvolvimento de software**.
 
-Ele foi projetado de uma forma modificável/hackeável para que você consiga implementar suas próprias idéias ou até reimplementar do zero em outras linguagens. Inclusive este é repositório é um **playground** de experimentos e qualquer tentativa será bem vinda.
+Ele foi projetado de uma forma modificável/hackeável para que você consiga implementar suas próprias ideias ou até reimplementar do zero em outras linguagens. Inclusive este repositório é um **playground** de experimentos e qualquer tentativa será bem-vinda.
 
 Antes de prosseguir, é extremamente importante você assistir esse vídeo introdutório com toda explicação por trás deste projeto, inclusive todos os passos utilizados para programar ele: **[Assistir introdução no YouTube](https://www.youtube.com/watch?v=0sTfIZvjYJk&list=PLMdYygf53DP5SVQQrkKCVWDS0TwYLVitL&index=2)**
 
@@ -33,7 +33,7 @@ Este é um projeto simples e pode ser desenvolvido em qualquer lugar, mas ultima
 2. Caso queira desenvolver sua própria versão ou modificação, faça um `fork` deste repositório para dentro da sua conta no Github.
 3. Depois disso, simplesmente adicione `gitpod.io/#` na frente da URL do seu repositório para clonar o workspace já com este repositório do jogo rodando.
 4. Você vai encontrar dentro da pasta `playground` todos os experimentos, então crie uma pasta nova para colocar o seu experimento.
-5. Você pode escrever todo o código do zero para acompanhar os **[vídeos tutoriais da playlist](https://www.youtube.com/playlist?list=PLMdYygf53DP5SVQQrkKCVWDS0TwYLVitL)**, mas também você copiar a pasta de um outro experimento e fazer as suas modificações.
+5. Você pode escrever todo o código do zero para acompanhar os **[vídeos tutoriais da playlist](https://www.youtube.com/playlist?list=PLMdYygf53DP5SVQQrkKCVWDS0TwYLVitL)**, mas também pode copiar a pasta de um outro experimento e fazer as suas modificações.
 6. Faça o `commit` de suas alterações, envie para seu `fork` e abra um Pull Request. Para o Gitpod ter acesso de escrita no seu repositório, você deve habilitar isto nas preferências do `Access Control`.
 
 ## Autor
