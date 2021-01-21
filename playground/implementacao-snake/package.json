@@ -15,7 +15,7 @@
     "express": "^4.17.1",
     "nodemon": "^2.0.1",
     "path": "^0.12.7",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.4.0"
   },
   "devDependencies": {
     "eslint": "^6.7.1"
