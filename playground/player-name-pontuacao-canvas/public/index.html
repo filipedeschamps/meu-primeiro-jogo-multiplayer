@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo Multiplayer</title>
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body{
+            width: 100vw;
+            height: 100vh;
+        }
+        .content{
+            display: flex;
+        }
+        #screen{            
+            border: 10px solid #CCC;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            image-rendering: -moz-crisp-edges;
+            width: 400px;
+            height: 400px;
+        }
+        #canvas-score{                        
+            border: 15px solid #fff;           
+            width: 400px;
+            height: 400px;
+        }
+    </style>
+
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div class="content">
+        <canvas id="screen" width="15" height="15"></canvas>
+        <canvas id="canvas-score" width="420" height="360"></canvas>
+    </div>      
+
+    <script type="module">
+        import createGame from './game.js';
+        import createKeyboardListener from './keyboard-listener.js';
+        import renderScreen from './render-screen.js';        
+        import renderScore from './render-score.js';   
+        
+        const collectFruitAudio = new Audio('./sounds/collect.mp3')
+        const collect100FruitAudio = new Audio('./sounds/100-collect.mp3')        
+        const playerName = prompt('Seu nome de jogador');
+
+        if(playerName !== ''){                        
+            gameConnection();
+        }       
+        
+        function gameConnection(){
+
+            const game = createGame(); 
+            const keyboardListener = createKeyboardListener(document);                        
+            const socket = io();
+
+            socket.on('connect', ()=>{
+                const playerId = socket.id;       
+                
+                socket.emit('create-player', playerName);
+                
+                const screen = document.getElementById("screen");       
+                renderScreen(screen, game, requestAnimationFrame, playerId);
+
+                let canvasScore = document.getElementById("canvas-score");            
+                renderScore(canvasScore, game, requestAnimationFrame, playerId);   
+            })
+
+            socket.on('setup',(state)=>{             
+
+                const playerId = socket.id;
+                
+                game.setState(state);
+
+                keyboardListener.registerPlayerId(playerId);
+                keyboardListener.subscribe(game.movePlayer); 
+                keyboardListener.subscribe((command)=>{
+                    socket.emit('move-player', command);
+                }); 
+
+            });      
+            
+            socket.on('add-player',(command)=>{            
+                game.addPlayer(command);
+            });
+
+            socket.on('remove-player',(command)=>{   
+                console.log(`> Player ${command} disconected`);
+                game.removePlayer(command);
+            });
+
+            socket.on('move-player', (command) =>{               
+                const playerId = socket.id;
+                if(playerId !== command.playerId){
+                    game.movePlayer(command);
+                }
+            });
+
+            socket.on('add-fruit', (command) =>{            
+                game.addFruit(command);            
+            });
+
+            socket.on('remove-fruit', (command) =>{   
+                const playerId = socket.id;
+                const score = game.state.players[playerId].score;
+                const multipleOf100Remainder = score % 100;
+
+                if (multipleOf100Remainder !== 0) {
+                    collectFruitAudio.pause();
+                    collectFruitAudio.currentTime = 0;
+                    collectFruitAudio.play();
+                }
+
+                if (multipleOf100Remainder === 0 && score !== 0) {
+                    collectFruitAudio.pause();
+                    collect100FruitAudio.pause();
+                    collect100FruitAudio.currentTime = 0;
+                    collect100FruitAudio.play();
+                }        
+                
+                game.removeFruit(command);            
+            });
+        }
+
+    </script>
+</body>
+</html>
