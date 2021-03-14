@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VS Code - jogo multiplayer</title>
+
+    <style>
+        #screen {
+            border: 10px solid #CCC;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            image-rendering: -moz-crisp-edges;
+            width: 400px;
+            height: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="screen" width="10" height="10"></canvas>
+
+    <script type="module">
+        import createKeyboardListener from './keyboard-listener.js'
+        import createGame from './game.js'
+        import renderScreen from './render-screen.js'
+        
+        const game = createGame()
+        const keyboardListener = createKeyboardListener(document)
+        keyboardListener.subscribe(game.movePlayer)
+
+        const screen = document.getElementById('screen')
+        renderScreen(screen, game, requestAnimationFrame)
+
+        game.addPlayer({ playerId: 'player1', playerX: 0, playerY: 0 })
+        game.addPlayer({ playerId: 'player2', playerX: 7, playerY: 0 })
+        game.addPlayer({ playerId: 'player3', playerX: 9, playerY: 0 })
+        game.addFruit({ fruitId: 'fruit1', fruitX: 3, fruitY: 3 })
+        game.addFruit({ fruitId: 'fruit2', fruitX: 3, fruitY: 5 })
+    </script>
+</body>
+
+</html>
