@@ -1,0 +1,185 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <title>Meu Primeiro Jogo Multiplayer</title>
+		  
+        <style>
+        		html,body{
+        			width: 100%;
+        			height: 100%;
+        			margin: 0;
+        			padding: 0;
+        		}
+        		
+            #screen {
+                border: 10px solid #CCC;
+                image-rendering: pixelated;
+                image-rendering: crisp-edges;
+                image-rendering: -moz-crisp-edges;
+                width: 400px;
+                height: 400px;
+                box-sizing: border-box;
+            }
+            
+            #button-container{
+            	display: none;
+            }
+            
+            @media only screen and (max-width: 900px) {
+	        		#screen{
+	        			width: 80vw;
+                	height: 80vw;
+                	margin-left: 10vw;
+                	margin-top: 10vw;
+	        		}
+	        		
+	            #button-container{
+	            	position: absolute;
+	            	width: 80%;
+	            	bottom: 2%;
+	            	display: grid;
+	            	grid-template-columns: repeat(3, 1fr);
+	            	grid-template-rows: repeat(2, 1fr);
+	            	grid-row-gap: 6vw;
+	            	margin-left: 10%;
+	            	box-sizing: border-box;
+	            	justify-content: space-evenly;
+	            	justify-items: center;
+	            }
+	            
+	            .material-icons.button{
+	            	padding: 5%;
+	            	box-sizing: border-box;
+	            	border-radius: 1.1vw;
+	            	text-align: center;
+	            	box-shadow: 0 0 1.1vw rgba(0,0,0,.4);
+	            	transition: opacity .2s;
+	            	color: #fff;
+	            	width: 12vw;
+	            	font-size: 10vw;
+	            	background-color: #333;
+	            	user-select: none;
+	            	-moz-user-select: -moz-none;
+	            }
+	            
+	            .material-icons.button:hover{
+	            	opacity: .8;
+	            }
+	            
+	            #ArrowLeft{
+	            	grid-column: 1 / span 1;
+	            	grid-row: 2 / span 1;
+	            }
+	            
+	            #ArrowUp{
+	            	grid-column: 2 / span 1;
+	            	grid-row: 1 / span 1;
+	            }
+	            
+	            #ArrowRight{
+	            	grid-column: 3 / span 1;
+	            	grid-row: 2 / span 1;
+	            }
+	            
+	            #ArrowDown{
+	            	grid-column: 2 / span 1;
+	            	grid-row: 2 / span 1;
+	            }
+            }
+        </style>
+        <script src="/socket.io/socket.io.js"></script>
+    </head>
+    <body>
+        <canvas id="screen" width="10" height="10"></canvas>
+		  
+		  <div id="button-container">
+		  		<i id="ArrowLeft" class="material-icons button">keyboard_arrow_left</i>
+		  		<i id="ArrowUp" class="material-icons button">keyboard_arrow_up</i>
+		  		<i id="ArrowRight" class="material-icons button">keyboard_arrow_right</i>
+		  		<i id="ArrowDown" class="material-icons button">keyboard_arrow_down</i>
+		  </div>
+        
+        <script type="module">
+            import createGame from './game.js'
+            import createMotionListener from './motion-listener.js'
+            import renderScreen from './render-screen.js'
+            
+            const game = createGame()
+            const motionListener = createMotionListener(document)
+            
+            const socket = io()
+
+            socket.on('connect', () => {
+                const playerId = socket.id
+                console.log(`Player connected on Client with id: ${playerId}`)
+
+                const screen = document.getElementById('screen')
+                renderScreen(screen, game, requestAnimationFrame, playerId)
+            })
+
+            socket.on('setup', (state) => {
+                const playerId = socket.id
+                game.setState(state)
+
+                motionListener.registerPlayerId(playerId)
+                motionListener.subscribe(game.movePlayer)
+                motionListener.subscribe((command) => {
+                    socket.emit('move-player', command)
+                })
+            })
+
+            socket.on('add-player', (command) => {
+                console.log(`Receiving ${command.type} -> ${command.playerId}`)
+                game.addPlayer(command)
+            })
+
+            socket.on('remove-player', (command) => {
+                console.log(`Receiving ${command.type} -> ${command.playerId}`)
+                game.removePlayer(command)
+            })
+
+            socket.on('move-player', (command) => {
+                console.log(`Receiving ${command.type} -> ${command.playerId}`)
+
+                const playerId = socket.id
+
+                if (playerId !== command.playerId) {
+                    game.movePlayer(command)
+                }
+            })
+
+            socket.on('add-fruit', (command) => {
+                console.log(`Receiving ${command.type} -> ${command.fruitId}`)
+                game.addFruit(command)
+            })
+
+            socket.on('remove-fruit', (command) => {
+                console.log(`Receiving ${command.type} -> ${command.fruitId}`)
+                game.removeFruit(command)
+            })
+            
+            socket.on('add-remover', (command) => {
+                console.log(`Receiving ${command.type} -> ${command.removerId}`)
+                game.addRemover(command)
+            })
+            
+            socket.on('remove-remover', (command) => {
+                console.log(`Receiving ${command.type} -> ${command.removerId}`)
+            	 game.removeRemover(command)
+            })
+            
+            socket.on('move-remover', (command) => {
+                console.log(`Receiving ${command.type} -> ${command.removerId}`)
+            	 game.moveRemover(command)
+            })
+            
+            socket.on('new-target', (command) => {
+                console.log(`Receiving ${command.type} -> ${command.removerId}`)
+            	 game.newTarget(command)
+            })
+        </script>
+    </body>
+</html>
