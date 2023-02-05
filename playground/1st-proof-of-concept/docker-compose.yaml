@@ -1,0 +1,8 @@
+services:
+  1st-proof-of-concept:
+    build: ./app/
+    ports:
+      - 3000:3000
+    volumes:
+      - ./app:/app
+      - app/node_modules
