@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Um clone do "Meu Primeiro Jogo Multiplayer" do Filipe</title>
+    <style>
+        #screen {
+            border: 10px solid #CCC;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            image-rendering: -moz-crisp-edges;
+            width: 400px;
+            height: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="screen" width="10" height="10"></canvas>
+</body>
+<script type="module">
+    import renderScreen from "./renderScreen.js";
+    import createGame from "./game.js";
+    import createKeyboardListener from "./keyboardListener.js";
+
+    const screen = document.querySelector("#screen");
+    const currentPlayerId = "player1";
+
+    const game = createGame();
+    const keyboardListener = createKeyboardListener(document);
+    
+    keyboardListener.subscrive(game.movePlayer);
+
+    renderScreen(screen, game, requestAnimationFrame);
+</script>
+
+</html>
