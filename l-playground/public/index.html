@@ -20,6 +20,7 @@
 <body>
     <canvas id="screen" width="10" height="10"></canvas>
 </body>
+<script src="/socket.io/socket.io.js"></script>
 <script type="module">
     import renderScreen from "./renderScreen.js";
     import createGame from "./game.js";
@@ -30,10 +31,22 @@
 
     const game = createGame();
     const keyboardListener = createKeyboardListener(document);
+    const socket = io();
     
     keyboardListener.subscrive(game.movePlayer);
 
     renderScreen(screen, game, requestAnimationFrame);
+
+    socket.on("connect", () => {
+        const playerId = socket.id;
+        console.log("Player " + playerId);
+    });
+
+    socket.on("setup", (state)=>{
+        console.log("State: ", state)
+
+        game.state = state;
+    });
 </script>
 
 </html>
