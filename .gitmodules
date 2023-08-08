@@ -1,0 +1,3 @@
+[submodule "playground/deno-quadtree"]
+	path = playground/deno-quadtree
+	url = https://github.com/Izumi-No/meu-primeiro-jogo-multiplayer-quadtree.git
