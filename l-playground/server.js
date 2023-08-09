@@ -8,30 +8,32 @@ const server = http.createServer(app);
 const game = createGame();
 const io = new Server(server);
 
-game.addPlayer({ playerId: "player1", playerX: 0, playerY: 0 });
-game.addPlayer({ playerId: "player2", playerX: 0, playerY: 1 });
-game.addPlayer({ playerId: "player3", playerX: 1, playerY: 0 });
-game.addPlayer({ playerId: "player4", playerX: 1, playerY: 1 });
-game.addFruit({ fruitId: "fruit1", fruitX: 2, fruitY: 2 });
-game.addFruit({ fruitId: "fruit2", fruitX: 2, fruitY: 3 });
+game.start();
+
+game.subscribe((command)=>{
+    io.emit(command.type, command);
+});
 
 app.use(express.static("public"));
 
 io.on("connection", (socket) => {
     const playerId = socket.id;
 
-    console.log("Player connected:", playerId);
-
-    // Handle player movements, fruit collection, and other events here
+    game.addPlayer({ playerId: playerId });
 
     socket.on("disconnect", () => {
-        console.log("Player disconnected:", playerId);
-        // Handle player disconnection and clean up here
+        game.removePlayer({ playerId: playerId });
+    });
+
+    socket.on("move-player", (command)=>{
+        command.playerId = playerId;
+        command.type = "move-player";
+        game.movePlayer(command);
     });
 
     socket.emit("setup", game.state);
 });
 
 server.listen(3000, () => {
-    console.log("oI")
+    console.log("Servidor ON!!")
 });
