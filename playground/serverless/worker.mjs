@@ -3,6 +3,9 @@ import game from "game.js";
 import keyboard_listener from "keyboard-listener.js";
 import render_screen from "render-screen.js";
 
+const headers =  {"Content-Type": "application/javascript; charset=utf-8"}
+const HeadersTextHtml = {"Content-Type": "text/html;charset=UTF-8"}
+const headersAccessControl = {"Access-Control-Allow-Origin": "*"}
 async function handleErrors(request, func) {
   try {
     return await func();
@@ -24,15 +27,15 @@ export default {
     return await handleErrors(request, async () => {
       let url = new URL(request.url);
       let path = url.pathname.slice(1).split('/');
-      if (!path[0]) return new Response(HTML, {headers: {"Content-Type": "text/html;charset=UTF-8"}});
+      if (!path[0]) return new Response(HTML, {headers: HeadersTextHtml});
       switch (path[0]) {
         case "api":
           return handleApiRequest(path.slice(1), request, env);
         default:
-          if (url.pathname == '/game.js') return new Response(game, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
-          if (url.pathname == '/keyboard-listener.js') return new Response(keyboard_listener, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
-          if (url.pathname == '/render-screen.js') return new Response(render_screen, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
-          if (url.pathname == '/socket.io/socket.io.js') return new Response(socket_io, {headers: {"Content-Type": "application/javascript; charset=utf-8"}});
+          if (url.pathname == '/game.js') return new Response(game, {headers});
+          if (url.pathname == '/keyboard-listener.js') return new Response(keyboard_listener, {headers});
+          if (url.pathname == '/render-screen.js') return new Response(render_screen, {headers});
+          if (url.pathname == '/socket.io/socket.io.js') return new Response(socket_io, {headers});
           return new Response("Not found", {status: 404});
       }
     });
@@ -46,7 +49,7 @@ async function handleApiRequest(path, request, env) {
       if (!path[1]) {
         if (request.method == "POST") {
           let id = env.rooms.newUniqueId();
-          return new Response(id.toString(), {headers: {"Access-Control-Allow-Origin": "*"}});
+          return new Response(id.toString(), {headers: headersAccessControl});
         } else {
           return new Response("Method not allowed", {status: 405});
         }
