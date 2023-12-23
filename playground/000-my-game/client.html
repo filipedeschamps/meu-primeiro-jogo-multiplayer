@@ -43,7 +43,40 @@
       }
 
       function movePlayer(command) {
-        console.log(`Move ${command.playerId} to ${command.keyPressed}`);
+        const acceptedMoves = {
+          ArrowUp(player) {
+            console.log('Moving player Up');
+            if (player.y - 1 >= 0) {
+              player.y += 1
+            }
+          },
+          ArrowRight(player) {
+            console.log('Moving player Right');
+            if (player.x + 1 < screen.width) {
+              player.x += 1
+            }
+          },
+          ArrowDown(player) {
+            console.log('Moving player Down');
+            if (player.y + 1 < screen.height) {
+              player.y += 1
+            }
+          },
+          ArrowLeft(player) {
+            console.log('Moving player Left');
+            if (player.x - 1 >= 0) {
+              player.x -= 1
+            }
+          }
+        }
+        const keyPressed = command.keyPressed;
+        const player = state.players[command.playerId]
+        const moveFunction = acceptedMoves[keyPressed]
+
+        if (moveFunction) moveFunction();
+
+        return
+
       }
 
       return {
@@ -65,11 +98,8 @@
       }
 
       function notifyAll(command) {
-        console.log(`Notifying ${state.observers.length} observers`);
-
         for (const observerFunction of state.observers) {
           observerFunction(command)
-
         }
       }
 
