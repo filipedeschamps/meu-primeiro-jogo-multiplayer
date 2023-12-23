@@ -26,68 +26,105 @@
     const screen = document.getElementById('screen')
     const context = screen.getContext('2d')
 
-
-
-    const game = createGame()
-
     function createGame() {
       const state = {
         players: {
-          player1: { x: 1, y: 1 },
-          player2: { x: 9, y: 9 }
         },
 
         fruits: {
-          fruit1: { x: 3, y: 1 },
         }
+      }
+
+      function addPlayer(command) {
+        const { playerId, playerX, playerY } = command
+
+        state.players[playerId] = {
+          x: playerX,
+          y: playerY
+        }
+      }
+
+      function removePlayer(command) {
+        delete state.players[command.playerId]
+      }
+
+      function addFruit(command) {
+        const { fruitId, fruitX, fruitY } = command
+
+        state.fruits[fruitId] = {
+          x: fruitX,
+          y: fruitY
+        }
+      }
+
+      function removeFruit(command) {
+        delete state.fruits[command.fruitId]
       }
 
       function movePlayer(command) {
+        const { playerId, keyPressed } = command
+
         const acceptedMoves = {
           ArrowUp(player) {
-            console.log('Moving player Up');
             if (player.y - 1 >= 0) {
-              player.y += 1
+              player.y = player.y - 1
             }
           },
           ArrowRight(player) {
-            console.log('Moving player Right');
             if (player.x + 1 < screen.width) {
-              player.x += 1
+              player.x = player.x + 1
             }
           },
           ArrowDown(player) {
-            console.log('Moving player Down');
             if (player.y + 1 < screen.height) {
-              player.y += 1
+              player.y = player.y + 1
             }
           },
           ArrowLeft(player) {
-            console.log('Moving player Left');
             if (player.x - 1 >= 0) {
-              player.x -= 1
+              player.x = player.x - 1
             }
           }
         }
-        const keyPressed = command.keyPressed;
-        const player = state.players[command.playerId]
+
+        const player = state.players[playerId]
         const moveFunction = acceptedMoves[keyPressed]
 
-        if (moveFunction) moveFunction();
-
-        return
-
+        if (player && moveFunction) {
+          moveFunction(player);
+          checkForFruitCollision(playerId)
+        }
       }
 
+      function checkForFruitCollision(playerId) {
+        const player = state.players[playerId]
+
+        for (const fruitId in state.fruits) {
+          const fruit = state.fruits[fruitId]
+
+          if (player.x === fruit.x && player.y === fruit.y) {
+            console.log(`collision between ${playerId} and ${fruitId}`);
+            removeFruit({ fruitId })
+          }
+        }
+      }
       return {
         movePlayer,
+        addPlayer,
+        removePlayer,
+        addFruit,
+        removeFruit,
         state
       }
     }
 
+    const game = createGame()
     const keyBoardListener = createKeyboardListener()
-
     keyBoardListener.subscribe(game.movePlayer)
+
+    game.addPlayer({ playerId: 'player1', playerX: 0, playerY: 0 })
+    game.addFruit({ fruitId: 'fruit1', fruitX: 0, fruitY: 1 })
+
     function createKeyboardListener() {
       const state = {
         observers: []
