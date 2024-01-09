@@ -21,8 +21,8 @@
 <body>
 
   <canvas id="screen" width="10" height="10"></canvas>
-  <script>
-
+  <script type="module">
+    import createKeyboardListener from './createKeyboardListener';
     const screen = document.getElementById('screen')
     const context = screen.getContext('2d')
 
@@ -125,40 +125,7 @@
     game.addPlayer({ playerId: 'player1', playerX: 0, playerY: 0 })
     game.addFruit({ fruitId: 'fruit1', fruitX: 0, fruitY: 1 })
 
-    function createKeyboardListener() {
-      const state = {
-        observers: []
-      }
-
-      function subscribe(observerFunction) {
-        state.observers.push(observerFunction)
-      }
-
-      function notifyAll(command) {
-        for (const observerFunction of state.observers) {
-          observerFunction(command)
-        }
-      }
-
-      document.addEventListener('keydown', handleKeyDown)
-
-      function handleKeyDown(event) {
-        const keyPressed = event.key;
-
-        const command = {
-          playerId: 'player1',
-          keyPressed
-        }
-
-        notifyAll(command);
-
-      }
-
-      return {
-        subscribe
-      }
-    }
-
+    
     renderScreen()
 
     function renderScreen() {
