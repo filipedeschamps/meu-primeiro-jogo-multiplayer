@@ -16,6 +16,7 @@
       height: 400px;
     }
   </style>
+  <script src="/socket.io/socket.io.js"></script>
 </head>
 
 <body>
@@ -26,18 +27,24 @@
     import createGame from './createGame.js';
     import renderScreen from './renderScreen.js';
 
-    const screen = document.getElementById('screen')
-
     const game = createGame()
     const keyBoardListener = createKeyboardListener(document)
     keyBoardListener.subscribe(game.movePlayer)
 
-    game.addPlayer({ playerId: 'player1', playerX: 0, playerY: 0 })
-    game.addFruit({ fruitId: 'fruit1', fruitX: 0, fruitY: 1 })
-
-
+    const screen = document.getElementById('screen')
     renderScreen(screen, game, requestAnimationFrame)
 
+    const socket = io()
+
+    socket.on('connect', () => {
+      const playerId = socket.id;
+      console.log('Player connected', playerId);
+    })
+
+    socket.on('setup', (state) => {
+      console.log(state);
+      game.state = state;
+    })
 
 
   </script>
