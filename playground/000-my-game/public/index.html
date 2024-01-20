@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu primeiro jogo online</title>
+
+  <style>
+    #screen {
+      border: 10px solid #ccc;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      image-rendering: -moz-crisp-edges;
+      width: 400px;
+      height: 400px;
+    }
+  </style>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+
+  <canvas id="screen" width="10" height="10"></canvas>
+  <script type="module">
+    import createKeyboardListener from './createKeyboardListener.js';
+    import createGame from './createGame.js';
+    import renderScreen from './renderScreen.js';
+
+    const game = createGame()
+    const keyBoardListener = createKeyboardListener(document)
+    keyBoardListener.subscribe(game.movePlayer)
+
+    const screen = document.getElementById('screen')
+    renderScreen(screen, game, requestAnimationFrame)
+
+    const socket = io()
+
+    socket.on('connect', () => {
+      const playerId = socket.id;
+      console.log('Player connected', playerId);
+    })
+
+    socket.on('setup', (state) => {
+      console.log(state);
+      game.state = state;
+    })
+
+
+  </script>
+</body>
+
+</html>
