@@ -1,82 +1,112 @@
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Meu Primeiro Jogo Multiplayer</title>
 
-        <style>
-            #screen {
-                border: 10px solid #CCC;
-                image-rendering: pixelated;
-                image-rendering: crisp-edges;
-                image-rendering: -moz-crisp-edges;
-                width: 400px;
-                height: 400px;
+<head>
+    <meta charset="utf-8">
+    <title>Meu Primeiro Jogo Multiplayer</title>
+
+    <style>
+        #screen {
+            border: 10px solid #CCC;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            image-rendering: -moz-crisp-edges;
+            width: 400px;
+            height: 400px;
+        }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <canvas id="screen"></canvas>
+
+    <script type="module">
+        import createGame from './game.js'
+
+        const game = createGame()
+        const canvas = document.getElementById('screen')
+        canvas.width = game.screen.width
+        canvas.height = game.screen.height
+        const socket = io()
+
+        let localPlayerId = null
+
+        document.addEventListener('keydown', (event) => {
+            const command = {
+                type: 'move-player',
+                playerId: localPlayerId,
+                keyPressed: event.key,
             }
-        </style>
-        <script src="/socket.io/socket.io.js"></script>
-    </head>
-    <body>
-        <canvas id="screen" width="10" height="10"></canvas>
+            game.updateGame(command)
+            socket.emit('move-player', command)
+        })
 
-        <script type="module">
-            import createGame from './game.js'
-            import createKeyboardListener from './keyboard-listener.js'
-            import renderScreen from './render-screen.js'
-            
-            const game = createGame()
-            const keyboardListener = createKeyboardListener(document)
-            
+        socket.on('setup', (remoteGameState) => {
+            console.log(`Setup: ${socket.id}`)
+            Object.assign(game.state, remoteGameState)
+            localPlayerId = socket.id
+        })
 
-            const socket = io()
+        socket.on('connect', () => {
+            console.log(`Player connected with ID: ${localPlayerId}`)
+            const context = canvas.getContext('2d')
 
-            socket.on('connect', () => {
-                const playerId = socket.id
-                console.log(`Player connected on Client with id: ${playerId}`)
+            function renderScreen() {
+                context.fillStyle = 'white'
+                context.clearRect(0, 0, 10, 10)
 
-                const screen = document.getElementById('screen')
-                renderScreen(screen, game, requestAnimationFrame, playerId)
-            })
-
-            socket.on('setup', (state) => {
-                const playerId = socket.id
-                game.setState(state)
-
-                keyboardListener.registerPlayerId(playerId)
-                keyboardListener.subscribe(game.movePlayer)
-                keyboardListener.subscribe((command) => {
-                    socket.emit('move-player', command)
-                })
-            })
-
-            socket.on('add-player', (command) => {
-                console.log(`Receiving ${command.type} -> ${command.playerId}`)
-                game.addPlayer(command)
-            })
-
-            socket.on('remove-player', (command) => {
-                console.log(`Receiving ${command.type} -> ${command.playerId}`)
-                game.removePlayer(command)
-            })
-
-            socket.on('move-player', (command) => {
-                console.log(`Receiving ${command.type} -> ${command.playerId}`)
-
-                const playerId = socket.id
-
-                if (playerId !== command.playerId) {
-                    game.movePlayer(command)
+                for (const fruitId in game.state.fruits) {
+                    const fruit = game.state.fruits[fruitId]
+                    context.fillStyle = 'green'
+                    context.fillRect(fruit.x, fruit.y, 1, 1)
                 }
-            })
 
-            socket.on('add-fruit', (command) => {
-                console.log(`Receiving ${command.type} -> ${command.fruitId}`)
-                game.addFruit(command)
-            })
+                for (const playerId in game.state.players) {
+                    const player = game.state.players[playerId]
+                    context.fillStyle = 'black'
+                    context.fillRect(player.x, player.y, 1, 1)
+                }
 
-            socket.on('remove-fruit', (command) => {
-                console.log(`Receiving ${command.type} -> ${command.fruitId}`)
-                game.removeFruit(command)
-            })
-        </script>
-    </body>
+                if (localPlayerId != null) {
+                    const player = game.state.players[localPlayerId]
+                    context.fillStyle = '#F0DB4F'
+                    context.fillRect(player.x, player.y, 1, 1)
+                }
+
+                requestAnimationFrame(renderScreen)
+            }
+
+            requestAnimationFrame(renderScreen)
+        })
+
+        socket.on('add-player', (command) => {
+            console.log(`Receiving ${command.type} -> ${command.playerId}`)
+            game.updateGame(command)
+        })
+
+        socket.on('remove-player', (command) => {
+            console.log(`Receiving ${command.type} -> ${command.playerId}`)
+            game.updateGame(command)
+        })
+
+        socket.on('move-player', (command) => {
+            console.log(`Receiving ${command.type} -> ${command.playerId}`)
+
+            if (localPlayerId !== command.playerId) {
+                game.updateGame(command)
+            }
+        })
+
+        socket.on('add-fruit', (command) => {
+            console.log(`Receiving ${command.type} -> ${command.fruitId}`)
+            game.updateGame(command)
+        })
+
+        socket.on('remove-fruit', (command) => {
+            console.log(`Receiving ${command.type} -> ${command.fruitId}`)
+            game.updateGame(command)
+        })
+    </script>
+</body>
+
 </html>
